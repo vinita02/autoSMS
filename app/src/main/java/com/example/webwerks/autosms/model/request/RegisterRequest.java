@@ -2,52 +2,27 @@ package com.example.webwerks.autosms.model.request;
 
 public class RegisterRequest {
 
-    private String Authorization;
-    private String emailId;
-    private String firstName;
-    private String mobileNumber;
-    private int activecode;
+    private String mobile_number;
+    private String  activation_code;
     private int operator;
-    private String paymentOption;
+    private String sim_type;
+    private String sms_plan;
+    private String billing_date;
 
-    public String getAuthorization() {
-        return Authorization;
+    public String getMobile_number() {
+        return mobile_number;
     }
 
-    public void setAuthorization(String authorization) {
-        Authorization = authorization;
+    public void setMobile_number(String mobile_number) {
+        this.mobile_number = mobile_number;
     }
 
-    public String getEmailId() {
-        return emailId;
+    public String getActivation_code() {
+        return activation_code;
     }
 
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
-
-    public int getActivecode() {
-        return activecode;
-    }
-
-    public void setActivecode(int activecode) {
-        this.activecode = activecode;
+    public void setActivation_code(String activation_code) {
+        this.activation_code = activation_code;
     }
 
     public int getOperator() {
@@ -58,11 +33,27 @@ public class RegisterRequest {
         this.operator = operator;
     }
 
-    public String getPaymentOption() {
-        return paymentOption;
+    public String getSim_type() {
+        return sim_type;
     }
 
-    public void setPaymentOption(String paymentOption) {
-        this.paymentOption = paymentOption;
+    public void setSim_type(String sim_type) {
+        this.sim_type = sim_type;
+    }
+
+    public String getSms_plan() {
+        return sms_plan;
+    }
+
+    public void setSms_plan(String sms_plan) {
+        this.sms_plan = sms_plan;
+    }
+
+    public String getBilling_date() {
+        return billing_date;
+    }
+
+    public void setBilling_date(String billing_date) {
+        this.billing_date = billing_date;
     }
 }

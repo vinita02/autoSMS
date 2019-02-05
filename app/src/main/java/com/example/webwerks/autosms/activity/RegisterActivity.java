@@ -1,33 +1,59 @@
 package com.example.webwerks.autosms.activity;
 
+import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
+import android.widget.Spinner;
 import com.example.webwerks.autosms.R;
+import com.example.webwerks.autosms.adapter.MobileNetworkAdapter;
 import com.example.webwerks.autosms.model.request.RegisterRequest;
+import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
-import com.example.webwerks.autosms.utils.CheckNetwork;
+import com.example.webwerks.autosms.utils.DateFormat;
+import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.utils.Validation;
 import com.example.webwerks.autosms.viewmodel.RegisterViewModel;
+
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
     private static String TAG = "RegisterActivity";
-    EditText etEmail, etFirstname, etMobile, etActicode, etOperator;
-    RadioGroup radioGroup;
-    RadioButton paymentOption;
+    EditText etMobile, etDate, etValidationCode;
+    ImageView imgMobilereward, imgBack, imgDate;
+    Spinner spinner;
+    RadioGroup rgSmsplan, rgMontlyopt;
+    RadioButton smsUnlimed, payOption;
     Button btnRegister;
     RegisterViewModel viewModel;
     RegisterRequest request = new RegisterRequest();
-    String email, firstName, mobile, actionCode, operator, paymentMode;
+    String smsPlan, paymentOpt, mobile,validationCode, billingDate,operatorId;
+    ArrayList<NetworkResponse.Operators> networkList = new ArrayList<>();
 
+
+    boolean checkReward = true;
+    public int startDay, startMonth, startYear;
+
+
+    public static void open(LoginActivity activity) {
+        activity.startActivity(new Intent(activity, RegisterActivity.class));
+    }
 
     @Override
     protected int getLayoutResourceId() {
@@ -38,24 +64,94 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void initViews() {
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
-        etEmail = findViewById(R.id.etEmail);
-        etFirstname = findViewById(R.id.etFirstname);
+
+        //List of NetworkOperators
+        getNetworkList();
+        viewModel.fetchNetworkOperator();
+
+
         etMobile = findViewById(R.id.etMobile);
-        etActicode = findViewById(R.id.etActicode);
-        etOperator = findViewById(R.id.etOperator);
-        radioGroup = findViewById(R.id.radioGroup);
-        //radioGroup.clearCheck();
+        etDate = findViewById(R.id.etDate);
+        rgSmsplan = findViewById(R.id.rgSmsplan);
+        etValidationCode = findViewById(R.id.etValidationCode);
+        imgMobilereward = findViewById(R.id.imgMobilereward);
+        //network spinner
+        spinner = findViewById(R.id.spinner);
         btnRegister = findViewById(R.id.btnRegister);
+        imgDate = findViewById(R.id.imgDate);
+        imgBack = findViewById(R.id.imgBack);
+        rgMontlyopt = findViewById(R.id.rgMontlyopt);
+
+        //onclick
+        imgMobilereward.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
+        imgDate.setOnClickListener(this);
+        imgBack.setOnClickListener(this);
+
 
         viewModel.getRegisterResponse().observe(this, new Observer<RegisterResponse>() {
             @Override
-            public void onChanged(@Nullable RegisterResponse registerResponse) {
-                Log.d(TAG, "onChanged");
+            public void onChanged(@Nullable RegisterResponse response) {
+                // Log.d(TAG, "onChanged"+registerResponse.result.token);
+
+                if (response !=null){
+                    if (response.getResponse_code().equals("200")){
+                        Prefs.setToken(getApplicationContext(),response.result.token);
+                        MyProfileActivity.open(getApplicationContext());
+                        showToast(response.getMessage());
+                    }else {
+                        Log.d(TAG,"error");
+                        showToast(response.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+
+    private void getNetworkList() {
+
+        viewModel.getNetworkList().observe(this, new Observer<NetworkResponse>() {
+            @Override
+            public void onChanged(@Nullable final NetworkResponse response) {
+                if (response != null) {
+                    if (response.getResponse_code().equals("200")) {
+
+                        final NetworkResponse.Operators operators = new NetworkResponse.Operators();
+                        operators.setId("0");
+                        operators.setOperator_name("select Mobile network");
+                        networkList.add(operators);
+
+                        if (response.result.operators.size() != 0) {
+
+                             networkList.addAll(response.result.getOperators());
+                             final MobileNetworkAdapter adapter = new MobileNetworkAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
+                            spinner.setAdapter(adapter);
+                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                     operatorId = adapter.getItem(i).id;
+                                     Log.d("TAGA", operatorId);
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> adapterView) {
+                                    Log.d("TAGA", "nothing");
+                                }
+                            });
+
+                        } else {
+                            Log.d("TAGA", response.getMessage());
+                        }
+                    } else {
+                        showToast(response.getMessage());
+                    }
+                }
             }
         });
 
     }
+
 
     @Override
     public void onClick(View view) {
@@ -64,60 +160,142 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case R.id.btnRegister:
                 register();
                 break;
+
+            case R.id.imgDate:
+                billingDate();
+                break;
+
+            case R.id.imgMobilereward:
+                unableReward();
+                break;
+
+            case R.id.imgBack:
+                onBackPressed();
+                break;
+
+            case R.id.etDate:
+                hideKeyboard();
+                break;
         }
     }
 
     private void register() {
 
-        email = etEmail.getText().toString();
-        firstName = etFirstname.getText().toString();
         mobile = etMobile.getText().toString();
-        actionCode = etActicode.getText().toString();
-        operator = etOperator.getText().toString();
+        validationCode = etValidationCode.getText().toString();
 
-        if (!Validation.isValidEmail(email)) {
-            showToast("Enter valid email");
-        } else if (!Validation.isValidName(firstName)) {
-            showToast("Enter your firstName");
-        } else if (!Validation.isValidMobile(mobile)) {
+
+        if (!Validation.isValidMobile(mobile)) {
             showToast("Enter valid Mobile number");
-        } else if (!Validation.isValidActivecode(actionCode)) {
-            showToast("Enter Activation Code");
-        } else if (!Validation.isValidOperator(operator)) {
-            showToast("Enter Operator");
-        } else if (!ischeckPaymentMode()) {
-            showToast("Select payment method");
-        } else {
-            if (!CheckNetwork.isConnected(this)) {
-                showToast("Enable Network State");
-            } else {
-                showToast("success");
-                Log.d(TAG, paymentMode);
-                request.setAuthorization("");
-                request.setEmailId(email);
-                request.setFirstName(firstName);
-                request.setMobileNumber(mobile);
-                request.setActivecode(Integer.parseInt(actionCode));
-                request.setOperator(Integer.parseInt(operator));
-                request.setPaymentOption(paymentMode);
-                viewModel.register(request);
-            }
+        } else if (Validation.isValidMobilenetwork(operatorId)) {
+            showToast("Select Mobile network");
+        } else if (!ischeckPaymentopt()) {
+            showToast("Select Mobile sim");
+        } else if (!ischeckSMSplan()) {
+            showToast("Select SMS plan");
+        } else if (!Validation.isValidValidationcode(validationCode)) {
+            showToast("enter Validation code");
+        } /*else if (!checkReward) {
+            showToast("reward service disable");
+        }*/ else {
+            request.setMobile_number(mobile);
+            request.setActivation_code(validationCode);
+            request.setOperator(Integer.parseInt(operatorId));
+            request.setSim_type(paymentOpt);
+            request.setSms_plan(smsPlan);
+            request.setBilling_date(billingDate);
+            viewModel.register(request);
         }
+
     }
 
 
-    private boolean ischeckPaymentMode() {
+    //Mobile reward
+    private void unableReward() {
+        if (checkReward) {
+            checkReward = false;
+            imgMobilereward.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.reward_unselect));
+        } else {
+            checkReward = true;
+            imgMobilereward.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.reward_select));
+        }
+    }
 
-        paymentOption = radioGroup.findViewById(radioGroup.getCheckedRadioButtonId());
+    //Billing Date
+    public void billingDate() {
 
-        if (radioGroup.getCheckedRadioButtonId() == -1) {
-            Log.d(TAG, "not check");
+        try {
+
+            int mYear, mMonth, mDay = 0;
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+            long minDate = c.getTime().getTime();
+            final DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            DateFormatSymbols symbols = new DateFormatSymbols(Locale.CANADA);
+                            String[] monthNames = symbols.getMonths();
+                            String month = monthNames[monthOfYear];
+                            startDay = dayOfMonth;
+                            startMonth = monthOfYear;
+                            startYear = year;
+                            billingDate = startMonth + "-" + startDay + "-" + startYear;
+                            String date = DateFormat.Date(billingDate);
+                            etDate.setText(date);
+                           Log.d(TAG,date);
+                        }
+                    }, mYear, mMonth, mDay);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2017, 0, 1);
+            datePickerDialog.getDatePicker().setMinDate(minDate);
+            datePickerDialog.show();
+
+
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+
+    }
+
+    //SIM option
+    private boolean ischeckPaymentopt() {
+
+        payOption = rgMontlyopt.findViewById(rgMontlyopt.getCheckedRadioButtonId());
+
+        if (rgMontlyopt.getCheckedRadioButtonId() == -1) {
             return false;
         } else {
-            Log.d(TAG, "checked");
-            paymentMode = paymentOption.getText().toString();
+           String getValue = payOption.getText().toString();
+
+            if (getValue.contains("Monthly")){
+                paymentOpt = "paymonthly";
+            }else {
+                paymentOpt = "payg";
+            }
             return true;
         }
     }
 
+    //SMS plan
+    private boolean ischeckSMSplan() {
+
+        smsUnlimed = rgSmsplan.findViewById(rgSmsplan.getCheckedRadioButtonId());
+
+        if (rgSmsplan.getCheckedRadioButtonId() == -1) {
+            return false;
+        } else {
+            String getValue = smsUnlimed.getText().toString();
+
+            if (getValue.contains("Yes")){
+                smsPlan = "1";
+            }else {
+                smsPlan = "0";
+            }
+            return true;
+        }
+    }
 }

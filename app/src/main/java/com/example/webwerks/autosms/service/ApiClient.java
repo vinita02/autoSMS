@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "";
+    private static final String BASE_URL = "http://autosms.php-dev.in/auto-sms-app/public/api/v1/";
     private Retrofit retrofit;
     private static ApiClient apiClient;
 

@@ -4,7 +4,7 @@ public class LoginRequest {
 
     private String Authorization;
     private String emailId;
-    private int password;
+    private String password;
 
     public String getAuthorization() {
         return Authorization;
@@ -22,11 +22,11 @@ public class LoginRequest {
         this.emailId = emailId;
     }
 
-    public int getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(int password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 }

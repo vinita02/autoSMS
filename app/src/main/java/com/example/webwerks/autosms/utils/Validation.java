@@ -36,7 +36,7 @@ public class Validation {
         return check;
     }
 
-    public static boolean isValidActivecode(String code) {
+    public static boolean isValidValidationcode(String code) {
         return !TextUtils.isEmpty(code);
     }
 
@@ -45,7 +45,9 @@ public class Validation {
     }
 
 
-
+    public static boolean isValidMobilenetwork(String network){
+        return network.equalsIgnoreCase("0");
+    }
 
 
 

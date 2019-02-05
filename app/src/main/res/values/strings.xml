@@ -5,6 +5,19 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="activation_code">Activation Code</string>
     <string name="operator">Operator</string>
+    <string name="register_now">Register Now</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="password">password</string>
+    <string name="network">What mobile network are you on?</string>
+    <string name="terms"><![CDATA[Terms & Condition]]></string>
+    <string name="monthly">Monthly</string>
+    <string name="payg">PAYG</string>
+    <string name="registered_mobile_number">Registered Mobile Number</string>
+    <string name="pay_monthly">Pay Monthly</string>
+    <string name="payg_sim">PAYG sim</string>
+    <string name="update">Update</string>
+    <string name="cancel">cancel</string>
+
+    <string name="font_name_Arial_Rounded">Arial_Rounded</string>
 </resources>

@@ -3,9 +3,13 @@ package com.example.webwerks.autosms.service;
 
 import com.example.webwerks.autosms.model.request.LoginRequest;
 import com.example.webwerks.autosms.model.request.RegisterRequest;
+import com.example.webwerks.autosms.model.request.ViewProfileRequest;
 import com.example.webwerks.autosms.model.response.BaseResponse;
 import com.example.webwerks.autosms.model.response.LoginResponse;
+import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
+import com.example.webwerks.autosms.model.response.ViewProfileResponse;
+
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -39,15 +43,27 @@ public class RestServices {
     }
 
     public RegisterResponse registerUser(RegisterRequest request){
-
-        Single <RegisterResponse> registerObservable = apiServices.userRegister(request.getAuthorization(),
-                request.getEmailId(),request.getFirstName(),request.getMobileNumber()
-                ,request.getActivecode(),request.getOperator(),request.getPaymentOption());
+        Single <RegisterResponse> registerObservable = apiServices.userRegister(request.getMobile_number(),request.getActivation_code(),
+                request.getOperator(),request.getSim_type(),request.getSms_plan(),request.getBilling_date());
 
         RegisterResponse response = attachCommonRxProperiesAndExecute(registerObservable,RegisterResponse.class);
-
         return response;
     }
+
+    public NetworkResponse networkOperatorList(){
+
+        Single <NetworkResponse> networkResponse = apiServices.networkOperator();
+        NetworkResponse response = attachCommonRxProperiesAndExecute(networkResponse,NetworkResponse.class);
+        return response;
+    }
+
+    public ViewProfileResponse viewProfile(ViewProfileRequest request){
+
+        Single <ViewProfileResponse> viewProfileResponse = apiServices.viewProfile(request.getToken());
+        ViewProfileResponse response = attachCommonRxProperiesAndExecute(viewProfileResponse,ViewProfileResponse.class);
+        return response;
+    }
+
 
 
     private <E> E attachCommonRxProperiesAndExecute(Single<E> observable,final Class errorClass){
@@ -56,8 +72,8 @@ public class RestServices {
                     @Override
                     public E apply(Throwable throwable) throws Exception {
                         BaseResponse response = (BaseResponse) errorClass.newInstance();
-                        response.setResponse_code(response.getResponse_code());
-                        response.setMessage(response.getMessage());
+                        response.setResponse_code("-1");
+                        response.setMessage(throwable.getMessage());
                         return (E) response;
                     }
                 })

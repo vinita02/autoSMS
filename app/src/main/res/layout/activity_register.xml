@@ -1,112 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="@drawable/register_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.RegisterActivity">
 
-    <TextView
-        android:id="@+id/txtHead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register"
-        android:textSize="28sp"
-        android:padding="8dp"
-        android:layout_centerHorizontal="true"/>
-
-
-    <LinearLayout
-        android:id="@+id/llMain"
-        android:layout_below="@+id/txtHead"
-        android:orientation="vertical"
-        android:padding="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:maxLines="1"
-            android:inputType="textEmailAddress"/>
-
-        <EditText
-            android:id="@+id/etFirstname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/firstname"
-            android:maxLines="1"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            android:inputType="text"/>
-
-        <EditText
-            android:id="@+id/etMobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/mobile_number"
-            android:maxLines="1"
-            android:maxLength="10"
-            android:digits="0123456789"
-            android:inputType="phone"/>
-
-        <EditText
-            android:id="@+id/etActicode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/activation_code"
-            android:maxLines="1"
-            android:inputType="number"/>
-
-        <EditText
-            android:id="@+id/etOperator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/operator"
-            android:maxLines="1"
-            android:inputType="number"/>
-   </LinearLayout>
-
-    <TextView
-        android:id="@+id/txtPay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pay Monthly"
-        android:textSize="18sp"
-        android:padding="4dp"
-        android:layout_below="@+id/llMain"/>
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_toEndOf="@+id/txtPay"
-        android:layout_below="@+id/llMain"
+    <RelativeLayout
+        android:id="@+id/llToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/radioYes"
+        <ImageView
+            android:id="@+id/imgBack"
+            android:padding="6dp"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/back_button"/>
+
+        <TextView
+            android:id="@+id/txtHead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Yes"
-            android:textSize="18sp"/>
+            android:text="@string/register"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:padding="6dp"/>
 
-        <RadioButton
-            android:id="@+id/radioNo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No"
-            android:textSize="18sp"/>
-    </RadioGroup>
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/llToolbar"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtPay"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="8dp"
-        android:text="@string/register"
-        android:textAllCaps="false"/>
+        >
 
+        <include
+            android:layout_marginTop="2dp"
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/register_card_design"/>
+
+        <LinearLayout
+            android:layout_below="@+id/cardView"
+            android:layout_marginTop="-40dp"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:visibility="visible"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:text="@string/register_now"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_register"
+                android:textAllCaps="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/cardView"
+            android:layout_marginTop="10dp"
+            android:id="@+id/llTerms"
+            app:layout_constraintTop_toBottomOf="@id/cardView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/terms"
+                android:textColor="@color/material_light_blue_500"
+                android:textSize="24sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

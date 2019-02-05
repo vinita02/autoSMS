@@ -37,9 +37,9 @@
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/firstname"
+        android:hint="@string/password"
         android:maxLines="1"
-        android:inputType="numberPassword"/>
+        android:inputType="textPassword"/>
 
     </LinearLayout>
 
@@ -52,6 +52,28 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="8dp"
         android:text="@string/login"
+        android:textAllCaps="false"/>
+
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:text="@string/register"
+        android:textAllCaps="false"/>
+
+
+    <Button
+        android:id="@+id/btnViewProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnRegister"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
+        android:text="view Profile"
         android:textAllCaps="false"/>
 
 </RelativeLayout>
