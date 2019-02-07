@@ -18,6 +18,19 @@
     <string name="payg_sim">PAYG sim</string>
     <string name="update">Update</string>
     <string name="cancel">cancel</string>
+    <string name="mobile_reward_condition">I agree to Mobile Rewards service agreement</string>
+    <string name="validation_code">Validation code</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="sms_plan_sentance">Do you have unlimited SMS plan?</string>
+    <string name="not_mandatory">Not Mandatory</string>
+    <string name="billing_date">Your Billing Date if know</string>
+    <string name="sim_plan">Do you have Pay Monthly or PAYG sim?</string>
+    <string name="activation_registered_with">Activation Registered with</string>
+    <string name="reward_status">Monthly \n Reward Status</string>
+    <string name="share_now">Share Now</string>
+    <string name="share_with_a_friend">Share with a friend</string>
 
-    <string name="font_name_Arial_Rounded">Arial_Rounded</string>
+
+
 </resources>

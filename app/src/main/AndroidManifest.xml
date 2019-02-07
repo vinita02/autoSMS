@@ -34,7 +34,10 @@
         </intent-filter>
             -->
         </activity>
-        <activity android:name=".activity.MyProfileActivity"></activity>
+        <activity android:name=".activity.MyProfileActivity" />
+        <activity android:name=".activity.DashboardActivity" />
+        <activity android:name=".activity.ShareScreenActivity" />
+        <activity android:name=".activity.TermsAndConditionActivity"></activity>
     </application>
 
 </manifest>

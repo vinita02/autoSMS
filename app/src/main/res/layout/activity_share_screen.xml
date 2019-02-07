@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/share_screen_bg"
+    android:padding="8dp"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    tools:context=".activity.ShareScreenActivity">
+
+    <LinearLayout
+        android:gravity="center"
+        android:id="@+id/llImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_marginTop="20dp"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:background="@drawable/group_icon" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/arial_rounded"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/share_with_a_friend"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@+id/llMobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/arial_rounded"
+                android:text="@string/mobile_number"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etMobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="@color/white"
+            android:digits="0123456789"
+            android:drawableRight="@drawable/contact"
+            android:fontFamily="@font/arial_rounded"
+            android:inputType="phone"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:textCursorDrawable="@null"
+            android:textColor="@color/white"
+            android:text="" />
+
+        <Button
+            android:id="@+id/btnShareNow"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_share"
+            android:fontFamily="@font/arial_rounded"
+            android:text="@string/share_now"
+            android:textAllCaps="false"
+            android:textColor="@color/buttonColor"
+            android:textSize="24sp"
+            android:padding="10dp"
+            android:visibility="visible" />
+    </LinearLayout>
+</LinearLayout>

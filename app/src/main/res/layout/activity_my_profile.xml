@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="My Profile"
+            android:fontFamily="@font/arial_rounded"
             android:textColor="@color/white"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -62,6 +63,7 @@
                     android:text="@string/registered_mobile_number"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
                 <TextView
@@ -73,6 +75,7 @@
                     android:text="8291450019"
                     android:textColor="@color/black"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -95,6 +98,7 @@
                     android:text="@string/network"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -130,9 +134,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="2"
-                    android:text="Do you have Pay Monthly or PAYG sim?"
+                    android:text="@string/sim_plan"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -154,6 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/pay_monthly"
+                        android:fontFamily="@font/arial_rounded"
                         android:textSize="18sp" />
 
                     <RadioButton
@@ -162,6 +168,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:text="@string/payg_sim"
+                        android:fontFamily="@font/arial_rounded"
                         android:textSize="18sp" />
                 </RadioGroup>
 
@@ -182,9 +189,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="2"
-                    android:text="Your Billing Date"
+                    android:text="@string/billing_date"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -204,6 +212,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:maxLines="1"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="" />
 
                 <ImageView
@@ -231,9 +240,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="2"
-                    android:text="Dou you have unlimited SMS plan?"
+                    android:text="@string/sms_plan_sentance"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -255,7 +265,8 @@
                         android:id="@+id/radioYes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Yes"
+                        android:text="@string/yes"
+                        android:fontFamily="@font/arial_rounded"
                         android:textSize="18sp" />
 
                     <RadioButton
@@ -263,7 +274,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="30dp"
-                        android:text="No"
+                        android:text="@string/no"
+                        android:fontFamily="@font/arial_rounded"
                         android:textSize="18sp" />
                 </RadioGroup>
 
@@ -282,9 +294,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Activation Registered with"
+                    android:text="@string/activation_registered_with"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
                 <TextView
@@ -296,6 +309,7 @@
                     android:text="82914AKQW50019"
                     android:textColor="@color/black"
                     android:textSize="18sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -313,25 +327,27 @@
 
                 <Button
                     android:id="@+id/btnCancel"
-                    android:layout_width="120dp"
+                    android:layout_width="110dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/button_cancel"
                     android:text="@string/cancel"
                     android:textAllCaps="false"
                     android:textColor="@color/buttonColor"
                     android:textSize="24sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:visibility="visible" />
 
                 <Button
                     android:id="@+id/btnUpdate"
-                    android:layout_width="120dp"
+                    android:layout_width="110dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="20dp"
                     android:background="@drawable/button_register"
                     android:text="@string/update"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="24sp"
+                    android:fontFamily="@font/arial_rounded"
                     android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>

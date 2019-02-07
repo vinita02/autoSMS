@@ -25,7 +25,7 @@ public class MobileNetworkAdapter extends ArrayAdapter<NetworkResponse.Operators
         View view = super.getView(position, convertView, parent);
 
         String name = operators.get(position).getOperator_name();
-        Log.d("TAGA",name);
+        Log.d("names",name);
         if (view instanceof TextView) {
             ((TextView) view).setText(name);
         }
