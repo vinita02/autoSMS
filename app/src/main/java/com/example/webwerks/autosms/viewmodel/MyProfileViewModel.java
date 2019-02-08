@@ -5,27 +5,29 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
+import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
+import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.model.response.ViewProfileResponse;
 import com.example.webwerks.autosms.service.RestServices;
 
-public class ViewProfileViewModel extends ViewModel {
+public class MyProfileViewModel extends ViewModel {
 
 
-   // private MutableLiveData<ViewProfileResponse> registerData;
+    private MutableLiveData<UpdateProfileResponse> updateProfile;
     private MutableLiveData<ViewProfileResponse> viewProfile;
 
 
-//    public LiveData<ViewProfileResponse> getRegisterResponse(){
-//
-//        if (registerData == null){
-//            registerData = new MutableLiveData<>();
-//        }
-//
-//        return registerData;
-//    }
+    public LiveData<UpdateProfileResponse> getUpdateProfileData(){
 
-    public LiveData<ViewProfileResponse> getProfileData(){
+        if (updateProfile == null){
+            updateProfile = new MutableLiveData<>();
+        }
+
+        return updateProfile;
+    }
+
+    public LiveData<ViewProfileResponse> getViewProfileData(){
 
         if (viewProfile == null){
             viewProfile = new MutableLiveData<>();
@@ -36,12 +38,12 @@ public class ViewProfileViewModel extends ViewModel {
 
 
 
-//    public void register(){
-//
-//        final ViewProfileResponse response = RestServices.getInstance().registerUser(request);
-//        Log.d("TAGA",response.toString());
-//        registerData.setValue(response);
-//    }
+    public void updateProfile(final UpdateProfileRequest request){
+
+        final UpdateProfileResponse response = RestServices.getInstance().updateProfile(request);
+        Log.d("TAGA",response.toString());
+        updateProfile.setValue(response);
+    }
 
 
     public void viewProfile(final ViewProfileRequest request){

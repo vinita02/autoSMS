@@ -20,8 +20,21 @@
         <ImageView
             android:layout_marginTop="20dp"
             android:layout_width="300dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:background="@drawable/group_icon" />
+
+        <TextView
+            android:id="@+id/txtRewardPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50%"
+            android:textSize="50dp"
+            android:layout_marginTop="-120dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/material_light_blue_500"
+            android:padding="8dp"
+            />
 
     </LinearLayout>
 
@@ -93,6 +106,8 @@
             android:textColor="@color/buttonColor"
             android:textSize="24sp"
             android:padding="10dp"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
             android:visibility="visible" />
     </LinearLayout>
 </LinearLayout>

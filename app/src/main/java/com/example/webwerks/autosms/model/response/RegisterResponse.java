@@ -35,25 +35,32 @@ public class RegisterResponse extends BaseResponse{
         @SerializedName("token")
         public String token;
 
-        @SerializedName("created_at")
-        public Created_at created_at;
+
+        @SerializedName("billing_date")
+        public String billing_date;
+
+        @SerializedName("message")
+        public String message;
+
+//        @SerializedName("created_at")
+//        public Created_at created_at;
 
     }
 
-    public class Created_at{
-
-
-        @SerializedName("date")
-        public String date;
-
-
-        @SerializedName("timezone_type")
-        public String timezone_type;
-
-
-        @SerializedName("timezone")
-        public String timezone;
-    }
+//    public class Created_at{
+//
+//
+//        @SerializedName("date")
+//        public String date;
+//
+//
+//        @SerializedName("timezone_type")
+//        public String timezone_type;
+//
+//
+//        @SerializedName("timezone")
+//        public String timezone;
+//    }
 
     public class Operator{
 

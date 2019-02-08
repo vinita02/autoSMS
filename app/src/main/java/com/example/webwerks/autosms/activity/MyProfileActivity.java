@@ -2,28 +2,33 @@ package com.example.webwerks.autosms.activity;
 
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.webwerks.autosms.R;
+import com.example.webwerks.autosms.adapter.OperatorsAdapter;
+import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
+import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.model.response.ViewProfileResponse;
 import com.example.webwerks.autosms.utils.DateFormat;
 import com.example.webwerks.autosms.utils.Prefs;
-import com.example.webwerks.autosms.viewmodel.ViewProfileViewModel;
+import com.example.webwerks.autosms.viewmodel.MyProfileViewModel;
 
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -35,12 +40,13 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     ImageView imgBack, imgDate;
     EditText etDate;
     Button btnUpdate, btnCancel;
-    ViewProfileViewModel viewModel;
-    String token;
-    ViewProfileRequest request = new ViewProfileRequest();
+    MyProfileViewModel viewModel;
+    String token,mobile;
+    UpdateProfileRequest updateRequest = new UpdateProfileRequest();
+    ViewProfileRequest viewRequest = new ViewProfileRequest();
     RadioButton radioMonthly, radioPayg, radioYes, radioNo;
-    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId;
-
+    String smsPlan, paymentOpt, validationCode, billingDate, operatorId;
+    ArrayList<ViewProfileResponse.Operators> networkList = new ArrayList<>();
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MyProfileActivity.class));
@@ -58,10 +64,10 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         token = Prefs.getToken(getApplicationContext());
         Log.d(TAG, token);
 
-//        viewModel = ViewModelProviders.of(this).get(ViewProfileViewModel.class);
-//        getProfileData();
-//        request.setToken(token);
-//        viewModel.viewProfile(request);
+        viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
+        getProfileData();
+        viewRequest.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTUyOTEzMiwiZXhwIjoxNTQ5NTMyNzMyLCJuYmYiOjE1NDk1MjkxMzIsImp0aSI6IkFxRXVNUWxCOEVXVTRqSjAiLCJzdWIiOjEyLCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.yifj9gmw2IQSSKqDqGOUaZRWf7XtxHZYXOlRdwQud2g");
+        viewModel.viewProfile(viewRequest);
 
         txtMobileNumber = findViewById(R.id.txtMobileNumber);
         txtValidationCode = findViewById(R.id.txtValidationCode);
@@ -84,35 +90,30 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         radioMonthly.setOnClickListener(this);
         radioPayg.setOnClickListener(this);
 
-        String value = "Yes";
-        if (value.contains("Yes")) {
-            radioYes.setChecked(true);
-            smsPlan = "1";
-        } else {
-            radioNo.setChecked(true);
-            smsPlan = "0";
-        }
-
-        String option = "payg";
-        if (option.contains("payg")) {
-            radioPayg.setChecked(true);
-            paymentOpt = "payg";
-        } else {
-            radioMonthly.setChecked(true);
-            paymentOpt = "paymonthly";
-        }
+        viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
+            @Override
+            public void onChanged(@Nullable UpdateProfileResponse response) {
+                if (response != null){
+                   if (response.getResponse_code().equals("200")){
+                       Log.d(TAG,response.result.message);
+                   }else {
+                       Log.d(TAG,"error");
+                   }
+                }
+            }
+        });
 
     }
 
-
     private void getProfileData() {
-        viewModel.getProfileData().observe(this, new Observer<ViewProfileResponse>() {
+        viewModel.getViewProfileData().observe(this, new Observer<ViewProfileResponse>() {
             @Override
             public void onChanged(@Nullable ViewProfileResponse response) {
                 if (response != null) {
                     if (response.getResponse_code().equals("200")) {
-//                        Log.d(TAG,response.result)
-
+                        Log.d(TAG,response.result.getOperators().get(0).operator_name);
+                        Log.d(TAG,response.getMessage());
+                        setValues(response);
                     } else {
                         Log.d(TAG, "error");
                         showToast(response.getMessage());
@@ -121,6 +122,62 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             }
         });
     }
+
+    public void setValues(ViewProfileResponse response){
+
+        //set mobile number
+        txtMobileNumber.setText(response.result.profile.mobile_number);
+        mobile = txtMobileNumber.getText().toString();
+
+        // set spinner
+        if (response.result.operators.size() != 0) {
+            networkList.addAll(response.result.getOperators());
+            Log.d("TAGA",networkList.toString());
+            final OperatorsAdapter adapter = new OperatorsAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
+            spinner.setAdapter(adapter);
+            int id = Integer.parseInt(response.result.profile.operator_id );
+            spinner.setSelection(id -1);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    operatorId = adapter.getItem(i).id;
+                    Log.d("TAGA", operatorId);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    Log.d("TAGA", "nothing");
+                }
+            });
+
+            //set sms plan
+            if (response.result.profile.sms_plan.contains("1")) {
+                radioYes.setChecked(true);
+                smsPlan = "1";
+            } else {
+                radioNo.setChecked(true);
+                smsPlan = "0";
+            }
+
+            //set sim type
+
+            if (response.result.profile.sim_type.contains("paymonthly")) {
+                radioMonthly.setChecked(true);
+                paymentOpt = "paymonthly";
+            } else {
+                radioPayg.setChecked(true);
+                paymentOpt = "payg";
+            }
+            //set billing date
+            etDate.setText(response.result.profile.billing_date);
+            billingDate = etDate.getText().toString();
+
+            //set activation code
+            txtValidationCode.setText(response.result.activation_codes.code);
+            validationCode = response.result.profile.activation_code_id;
+        }
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -156,10 +213,19 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void update() {
-
-        Log.d("TAGA", smsPlan);
+        Log.d("TAGA", mobile);
+        Log.d("TAGA", operatorId);
         Log.d("TAGA", paymentOpt);
         Log.d("TAGA", billingDate);
+        Log.d("TAGA", smsPlan);
+        Log.d("TAGA", validationCode);
+        updateRequest.setMobile_number(mobile);
+        updateRequest.setOperator(Integer.parseInt(operatorId));
+        updateRequest.setSim_type(paymentOpt);
+        updateRequest.setBilling_date(billingDate);
+        updateRequest.setSms_plan(smsPlan);
+        updateRequest.setActivation_code(validationCode);
+        viewModel.updateProfile(updateRequest);
     }
 
     //Billing Date

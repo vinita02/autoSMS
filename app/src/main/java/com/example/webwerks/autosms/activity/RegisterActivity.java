@@ -99,17 +99,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 if (response != null) {
                     if (response.getResponse_code().equals("200")) {
                         Prefs.setToken(getApplicationContext(), response.result.token);
+                        Prefs.setUserMobile(getApplicationContext(), response.result.mobile_number);
                         MyProfileActivity.open(getApplicationContext());
                         showToast(response.getMessage());
                     } else {
                         Log.d(TAG, "error");
-                        showToast(response.getMessage());
+                        showToast(response.result.message);
                     }
                 }
             }
         });
     }
-
 
     private void getNetworkList() {
 

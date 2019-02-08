@@ -38,41 +38,79 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="100dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="1">
 
-            <ImageView
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:background="@drawable/group_icon"/>
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="0dp"
+                 android:layout_weight="0.5"
+                 android:orientation="vertical"
+                 >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/reward_status"
-                android:layout_gravity="center"
-                android:fontFamily="@font/arial_rounded"
-                android:textSize="26sp"
-                android:padding="12dp"
-                android:textColor="@color/material_light_blue_500"
-                android:gravity="center"/>
 
-            <Button
-                android:id="@+id/btnShareNow"
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/button_register"
-                android:text="@string/share_now"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:layout_gravity="center"
-                android:layout_marginTop="25dp"
-                android:fontFamily="@font/arial_rounded"
-                android:visibility="visible" />
+                 <ImageView
+                     android:layout_marginTop="20dp"
+                     android:layout_width="300dp"
+                     android:layout_height="200dp"
+                     android:layout_gravity="center"
+                     android:background="@drawable/group_icon"/>
 
+                 <TextView
+                     android:id="@+id/txtRewardPercent"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="50%"
+                     android:textSize="50dp"
+                     android:layout_marginTop="-120dp"
+                     android:layout_gravity="center"
+                     android:gravity="center"
+                     android:textColor="@color/material_light_blue_500"
+                     android:padding="8dp"
+                     />
+
+             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reward_status"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/arial_rounded"
+                    android:textSize="26sp"
+                    android:padding="12dp"
+                    android:textColor="@color/material_light_blue_500"
+                    android:gravity="center"/>
+
+                <Button
+                    android:id="@+id/btnShareNow"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:background="@drawable/button_register"
+                    android:text="@string/share_now"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/arial_rounded"
+                    android:visibility="visible" />
+
+            </LinearLayout>
 
         </LinearLayout>
+
+
 </RelativeLayout>

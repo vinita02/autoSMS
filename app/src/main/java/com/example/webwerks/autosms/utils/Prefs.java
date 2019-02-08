@@ -8,6 +8,7 @@ public class Prefs {
 
     private static final String USER_DATA = "user_data";
     private static final String TOKEN = "token";
+    private static final String USER_MOBILE = "mobile";
 
     private static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -32,5 +33,15 @@ public class Prefs {
 
     public static String getToken(Context ctx) {
         return getSharedPreferences(ctx).getString(TOKEN, "");
+    }
+
+    public static void setUserMobile(Context ctx, String str) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(USER_MOBILE, str);
+        editor.apply();
+    }
+
+    public static String getUserMobile(Context ctx) {
+        return getSharedPreferences(ctx).getString(USER_MOBILE, "");
     }
 }

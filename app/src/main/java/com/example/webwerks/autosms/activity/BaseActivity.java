@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
     public String DEVICE_ID;

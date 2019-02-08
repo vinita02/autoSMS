@@ -3,13 +3,15 @@ package com.example.webwerks.autosms.service;
 
 import com.example.webwerks.autosms.model.request.LoginRequest;
 import com.example.webwerks.autosms.model.request.RegisterRequest;
+import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
 import com.example.webwerks.autosms.model.response.BaseResponse;
 import com.example.webwerks.autosms.model.response.LoginResponse;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
+import com.example.webwerks.autosms.model.response.TermsResponse;
+import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.model.response.ViewProfileResponse;
-
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -64,6 +66,21 @@ public class RestServices {
         return response;
     }
 
+    public UpdateProfileResponse updateProfile(UpdateProfileRequest request){
+
+        Single <UpdateProfileResponse> updateProfileResponse = apiServices.updateProfile(request.getMobile_number(),request.getActivation_code(),
+                request.getOperator(),request.getSim_type(),request.getSms_plan(),request.getBilling_date());
+        UpdateProfileResponse response = attachCommonRxProperiesAndExecute(updateProfileResponse,UpdateProfileResponse.class);
+        return response;
+    }
+
+
+    public TermsResponse getContent(){
+
+        Single <TermsResponse> termsResponse = apiServices.getContent();
+        TermsResponse response = attachCommonRxProperiesAndExecute(termsResponse,TermsResponse.class);
+        return response;
+    }
 
 
     private <E> E attachCommonRxProperiesAndExecute(Single<E> observable,final Class errorClass){

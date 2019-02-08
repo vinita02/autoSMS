@@ -22,7 +22,6 @@ public class NetworkResponse extends BaseResponse{
         }
 
         @SerializedName("operators")
-
         public ArrayList<Operators> operators;
     }
 
