@@ -23,6 +23,7 @@ import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
 import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.model.response.ViewProfileResponse;
+import com.example.webwerks.autosms.utils.CheckNetwork;
 import com.example.webwerks.autosms.utils.DateFormat;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.viewmodel.MyProfileViewModel;
@@ -41,7 +42,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     EditText etDate;
     Button btnUpdate, btnCancel;
     MyProfileViewModel viewModel;
-    String token,mobile;
+    String token, mobile;
     UpdateProfileRequest updateRequest = new UpdateProfileRequest();
     ViewProfileRequest viewRequest = new ViewProfileRequest();
     RadioButton radioMonthly, radioPayg, radioYes, radioNo;
@@ -61,13 +62,18 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void initViews() {
 
-        token = Prefs.getToken(getApplicationContext());
+        //token = Prefs.getToken(getApplicationContext());
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTYwNDM5OSwiZXhwIjoxNTUwODEzOTk5LCJuYmYiOjE1NDk2MDQzOTksImp0aSI6Ijd1VlRyYVhqTFRrdlZ1cjEiLCJzdWIiOjE1LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.JhcQAYBgIAyuHeCAUOeF_ahfXVbO7RzCPwp00f-d8Zk";
         Log.d(TAG, token);
 
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
         getProfileData();
-        viewRequest.setToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTUyOTEzMiwiZXhwIjoxNTQ5NTMyNzMyLCJuYmYiOjE1NDk1MjkxMzIsImp0aSI6IkFxRXVNUWxCOEVXVTRqSjAiLCJzdWIiOjEyLCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.yifj9gmw2IQSSKqDqGOUaZRWf7XtxHZYXOlRdwQud2g");
-        viewModel.viewProfile(viewRequest);
+        if (!CheckNetwork.isConnected(this)) {
+            showToast("Enable Network State");
+        } else {
+            viewRequest.setToken(token);
+            viewModel.viewProfile(viewRequest);
+        }
 
         txtMobileNumber = findViewById(R.id.txtMobileNumber);
         txtValidationCode = findViewById(R.id.txtValidationCode);
@@ -93,12 +99,13 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
             @Override
             public void onChanged(@Nullable UpdateProfileResponse response) {
-                if (response != null){
-                   if (response.getResponse_code().equals("200")){
-                       Log.d(TAG,response.result.message);
-                   }else {
-                       Log.d(TAG,"error");
-                   }
+                if (response != null) {
+                    if (response.getResponse_code().equals("200")) {
+                        Log.d(TAG, response.result.message);
+                        finish();
+                    } else {
+                        Log.d(TAG, response.result.message);
+                    }
                 }
             }
         });
@@ -111,9 +118,15 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             public void onChanged(@Nullable ViewProfileResponse response) {
                 if (response != null) {
                     if (response.getResponse_code().equals("200")) {
-                        Log.d(TAG,response.result.getOperators().get(0).operator_name);
-                        Log.d(TAG,response.getMessage());
-                        setValues(response);
+
+                        if (response.error != null) {
+                            Log.d(TAG, response.error);
+                        } else {
+                            Log.d(TAG, response.result.getOperators().get(0).operator_name);
+                            Log.d(TAG, response.getMessage());
+                            setValues(response);
+                        }
+
                     } else {
                         Log.d(TAG, "error");
                         showToast(response.getMessage());
@@ -123,7 +136,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
-    public void setValues(ViewProfileResponse response){
+    public void setValues(ViewProfileResponse response) {
 
         //set mobile number
         txtMobileNumber.setText(response.result.profile.mobile_number);
@@ -132,11 +145,11 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         // set spinner
         if (response.result.operators.size() != 0) {
             networkList.addAll(response.result.getOperators());
-            Log.d("TAGA",networkList.toString());
+            Log.d("TAGA", networkList.toString());
             final OperatorsAdapter adapter = new OperatorsAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
             spinner.setAdapter(adapter);
-            int id = Integer.parseInt(response.result.profile.operator_id );
-            spinner.setSelection(id -1);
+            int id = Integer.parseInt(response.result.profile.operator_id);
+            spinner.setSelection(id - 1);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -174,7 +187,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
             //set activation code
             txtValidationCode.setText(response.result.activation_codes.code);
-            validationCode = response.result.profile.activation_code_id;
+            validationCode = txtValidationCode.getText().toString();
         }
     }
 
@@ -199,6 +212,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 paymentOpt = "payg";
                 break;
             case R.id.btnCancel:
+                finish();
                 break;
             case R.id.imgDate:
                 billingDate();
@@ -219,13 +233,18 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         Log.d("TAGA", billingDate);
         Log.d("TAGA", smsPlan);
         Log.d("TAGA", validationCode);
-        updateRequest.setMobile_number(mobile);
-        updateRequest.setOperator(Integer.parseInt(operatorId));
-        updateRequest.setSim_type(paymentOpt);
-        updateRequest.setBilling_date(billingDate);
-        updateRequest.setSms_plan(smsPlan);
-        updateRequest.setActivation_code(validationCode);
-        viewModel.updateProfile(updateRequest);
+        if (!CheckNetwork.isConnected(this)) {
+            showToast("Enable Network State");
+        } else {
+            updateRequest.setToken(token);
+            updateRequest.setMobile_number(mobile);
+            updateRequest.setOperator(Integer.parseInt(operatorId));
+            updateRequest.setSim_type(paymentOpt);
+            updateRequest.setBilling_date(billingDate);
+            updateRequest.setSms_plan(smsPlan);
+            updateRequest.setActivation_code(validationCode);
+            viewModel.updateProfile(updateRequest);
+        }
     }
 
     //Billing Date

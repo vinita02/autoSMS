@@ -48,6 +48,7 @@ public interface ApiServices {
    @POST("user/updateProfile")
    @FormUrlEncoded
    Single<UpdateProfileResponse> updateProfile(
+           @Field("token") String token,
            @Field("mobile_number") String mobile_number,
            @Field("activation_code") String activation_code,
            @Field("operator_id") int operator,
@@ -57,6 +58,6 @@ public interface ApiServices {
 
 
    @GET("user/termscontent")
-   Single<TermsResponse> getContent();
+   Single<TermsResponse> getTermsandCondition();
 
 }

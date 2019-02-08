@@ -1,10 +1,16 @@
 package com.example.webwerks.autosms.model.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 public class ViewProfileResponse extends BaseResponse{
+
+
+    @SerializedName("error")
+    @Expose
+    public String error;
 
     @SerializedName("result")
     public Result result;
@@ -34,6 +40,11 @@ public class ViewProfileResponse extends BaseResponse{
 
         @SerializedName("token")
         public String token;
+
+
+        @SerializedName("message")
+        @Expose
+        public String message;
     }
 
 

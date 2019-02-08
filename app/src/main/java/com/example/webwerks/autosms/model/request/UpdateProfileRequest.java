@@ -3,12 +3,23 @@ package com.example.webwerks.autosms.model.request;
 public class UpdateProfileRequest {
 
 
+
+    private String token;
     private String mobile_number;
     private String  activation_code;
     private int operator;
     private String sim_type;
     private String sms_plan;
     private String billing_date;
+
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getMobile_number() {
         return mobile_number;

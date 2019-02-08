@@ -15,29 +15,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.SplaceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.LoginActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity
             android:name=".activity.RegisterActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
-
-            <!--
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-            -->
         </activity>
         <activity android:name=".activity.MyProfileActivity" />
         <activity android:name=".activity.DashboardActivity" />
         <activity android:name=".activity.ShareScreenActivity" />
-        <activity android:name=".activity.TermsAndConditionActivity"></activity>
+        <activity android:name=".activity.TermsAndConditionActivity" />
     </application>
 
 </manifest>

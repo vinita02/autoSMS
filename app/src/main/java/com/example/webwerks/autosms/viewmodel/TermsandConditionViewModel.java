@@ -5,9 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
-import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.response.TermsResponse;
-import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.service.RestServices;
 
 public class TermsandConditionViewModel extends ViewModel {
@@ -30,7 +28,7 @@ public class TermsandConditionViewModel extends ViewModel {
 
     public void getTermsandCondtion(){
 
-        final TermsResponse response = RestServices.getInstance().getContent();
+        final TermsResponse response = RestServices.getInstance().getTermsandCondition();
         Log.d("TAGA",response.toString());
         getContent.setValue(response);
     }

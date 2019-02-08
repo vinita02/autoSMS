@@ -23,15 +23,14 @@ import com.example.webwerks.autosms.adapter.MobileNetworkAdapter;
 import com.example.webwerks.autosms.model.request.RegisterRequest;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
+import com.example.webwerks.autosms.utils.CheckNetwork;
 import com.example.webwerks.autosms.utils.DateFormat;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.utils.Validation;
 import com.example.webwerks.autosms.viewmodel.RegisterViewModel;
-
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Locale;
 
 
@@ -69,7 +68,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
         //List of NetworkOperators
         getNetworkList();
-        viewModel.fetchNetworkOperator();
+        if (!CheckNetwork.isConnected(this)) {
+            showToast("Enable Network State");
+        }else {
+            viewModel.fetchNetworkOperator();
+        }
         etMobile = findViewById(R.id.etMobile);
         etDate = findViewById(R.id.etDate);
         rgSmsplan = findViewById(R.id.rgSmsplan);
@@ -82,7 +85,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         imgBack = findViewById(R.id.imgBack);
         rgMontlyopt = findViewById(R.id.rgMontlyopt);
         txtTerms = findViewById(R.id.txtTerms);
-
         //onclick
         imgMobilereward.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
@@ -101,6 +103,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         Prefs.setToken(getApplicationContext(), response.result.token);
                         Prefs.setUserMobile(getApplicationContext(), response.result.mobile_number);
                         MyProfileActivity.open(getApplicationContext());
+                        finish();
                         showToast(response.getMessage());
                     } else {
                         Log.d(TAG, "error");
@@ -206,15 +209,18 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         } /*else if (!checkReward) {
             showToast("reward service disable");
         }*/ else {
-            request.setMobile_number(mobile);
-            request.setActivation_code(validationCode);
-            request.setOperator(Integer.parseInt(operatorId));
-            request.setSim_type(paymentOpt);
-            request.setSms_plan(smsPlan);
-            request.setBilling_date(billingDate);
-            viewModel.register(request);
+            if (!CheckNetwork.isConnected(this)) {
+                showToast("Enable Network State");
+            } else {
+                request.setMobile_number(mobile);
+                request.setActivation_code(validationCode);
+                request.setOperator(Integer.parseInt(operatorId));
+                request.setSim_type(paymentOpt);
+                request.setSms_plan(smsPlan);
+                request.setBilling_date(billingDate);
+                viewModel.register(request);
+            }
         }
-
     }
 
 

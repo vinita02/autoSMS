@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.model.response.TermsResponse;
+import com.example.webwerks.autosms.utils.CheckNetwork;
 import com.example.webwerks.autosms.viewmodel.TermsandConditionViewModel;
 
 public class TermsAndConditionActivity extends BaseActivity implements View.OnClickListener {
@@ -38,7 +39,11 @@ public class TermsAndConditionActivity extends BaseActivity implements View.OnCl
 
         viewModel = ViewModelProviders.of(this).get(TermsandConditionViewModel.class);
         getContent();
-        viewModel.getTermsandCondtion();
+        if (!CheckNetwork.isConnected(this)) {
+            showToast("Enable Network State");
+        }else {
+            viewModel.getTermsandCondtion();
+        }
     }
 
     private void getContent() {

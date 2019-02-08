@@ -68,16 +68,16 @@ public class RestServices {
 
     public UpdateProfileResponse updateProfile(UpdateProfileRequest request){
 
-        Single <UpdateProfileResponse> updateProfileResponse = apiServices.updateProfile(request.getMobile_number(),request.getActivation_code(),
+        Single <UpdateProfileResponse> updateProfileResponse = apiServices.updateProfile(request.getToken(),request.getMobile_number(),request.getActivation_code(),
                 request.getOperator(),request.getSim_type(),request.getSms_plan(),request.getBilling_date());
         UpdateProfileResponse response = attachCommonRxProperiesAndExecute(updateProfileResponse,UpdateProfileResponse.class);
         return response;
     }
 
 
-    public TermsResponse getContent(){
+    public TermsResponse getTermsandCondition(){
 
-        Single <TermsResponse> termsResponse = apiServices.getContent();
+        Single <TermsResponse> termsResponse = apiServices.getTermsandCondition();
         TermsResponse response = attachCommonRxProperiesAndExecute(termsResponse,TermsResponse.class);
         return response;
     }

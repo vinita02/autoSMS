@@ -81,8 +81,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
 
             case R.id.btnViewProfile:
-//                MyProfileActivity.open(this);
-                DashboardActivity.open(this);
+                MyProfileActivity.open(this);
+//                DashboardActivity.open(this);
                 break;
 
 
