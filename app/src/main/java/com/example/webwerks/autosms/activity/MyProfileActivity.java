@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -33,68 +34,61 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MyProfileActivity extends BaseActivity implements View.OnClickListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
+public class MyProfileActivity extends BaseActivity {
 
     private static String TAG = "MyProfileActivity";
-    TextView txtMobileNumber, txtValidationCode;
-    Spinner spinner;
-    ImageView imgBack, imgDate;
-    EditText etDate;
-    Button btnUpdate, btnCancel;
+    @BindView(R.id.txtMobileNumber) TextView txtMobileNumber;
+    @BindView(R.id.txtValidationCode) TextView txtValidationCode;
+    @BindView(R.id.spinner) Spinner spinner;
+    @BindView(R.id.imgBack) ImageView imgBack;
+    @BindView(R.id.imgDate) ImageView imgDate;
+    @BindView(R.id.etDate) EditText etDate;
+    @BindView(R.id.btnUpdate) Button btnUpdate;
+    @BindView(R.id.btnCancel) Button btnCancel;
+    @BindView(R.id.radioMonthly) RadioButton radioMonthly;
+    @BindView(R.id.radioPayg) RadioButton radioPayg;
+    @BindView(R.id.radioYes) RadioButton radioYes;
+    @BindView(R.id.radioNo) RadioButton radioNo;
     MyProfileViewModel viewModel;
     String token, mobile;
     UpdateProfileRequest updateRequest = new UpdateProfileRequest();
     ViewProfileRequest viewRequest = new ViewProfileRequest();
-    RadioButton radioMonthly, radioPayg, radioYes, radioNo;
     String smsPlan, paymentOpt, validationCode, billingDate, operatorId;
     ArrayList<ViewProfileResponse.Operators> networkList = new ArrayList<>();
 
     public static void open(Context context) {
-        context.startActivity(new Intent(context, MyProfileActivity.class));
-    }
-
-
+        context.startActivity(new Intent(context, MyProfileActivity.class));}
     @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_my_profile;
     }
-
     @Override
     protected void initViews() {
-
         //token = Prefs.getToken(getApplicationContext());
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTYwNDM5OSwiZXhwIjoxNTUwODEzOTk5LCJuYmYiOjE1NDk2MDQzOTksImp0aSI6Ijd1VlRyYVhqTFRrdlZ1cjEiLCJzdWIiOjE1LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.JhcQAYBgIAyuHeCAUOeF_ahfXVbO7RzCPwp00f-d8Zk";
+        //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTYwNDM5OSwiZXhwIjoxNTUwODEzOTk5LCJuYmYiOjE1NDk2MDQzOTksImp0aSI6Ijd1VlRyYVhqTFRrdlZ1cjEiLCJzdWIiOjE1LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.JhcQAYBgIAyuHeCAUOeF_ahfXVbO7RzCPwp00f-d8Zk";
+        token =  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTg3NDM1NywiZXhwIjoxNTUxMDgzOTU3LCJuYmYiOjE1NDk4NzQzNTcsImp0aSI6IjgzNFpvS0RGV1N2MGxkQk0iLCJzdWIiOjE3LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.59Ly77AiBylezt1OzH7cZpH8ydSL6aGCyKlOzdnPjE8";
         Log.d(TAG, token);
-
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
-        getProfileData();
-        if (!CheckNetwork.isConnected(this)) {
-            showToast("Enable Network State");
-        } else {
-            viewRequest.setToken(token);
-            viewModel.viewProfile(viewRequest);
-        }
-
-        txtMobileNumber = findViewById(R.id.txtMobileNumber);
-        txtValidationCode = findViewById(R.id.txtValidationCode);
-        spinner = findViewById(R.id.spinner);
-        etDate = findViewById(R.id.etDate);
-        radioYes = findViewById(R.id.radioYes);
-        radioNo = findViewById(R.id.radioNo);
-        imgBack = findViewById(R.id.imgBack);
-        imgDate = findViewById(R.id.imgDate);
-        btnUpdate = findViewById(R.id.btnUpdate);
-        btnCancel = findViewById(R.id.btnCancel);
-        radioMonthly = findViewById(R.id.radioMonthly);
-        radioPayg = findViewById(R.id.radioPayg);
-        imgBack.setOnClickListener(this);
-        imgDate.setOnClickListener(this);
-        btnUpdate.setOnClickListener(this);
-        btnCancel.setOnClickListener(this);
-        radioYes.setOnClickListener(this);
-        radioNo.setOnClickListener(this);
-        radioMonthly.setOnClickListener(this);
-        radioPayg.setOnClickListener(this);
+        //set View Profile
+        showProgress();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                getProfileData();
+                if (!CheckNetwork.isConnected(getApplicationContext())) {
+                    showToast("Enable Network State");
+                } else {
+                    viewRequest.setToken(token);
+                    viewModel.viewProfile(viewRequest);
+                }
+            }
+        },3000);
 
         viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
             @Override
@@ -102,16 +96,16 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 if (response != null) {
                     if (response.getResponse_code().equals("200")) {
                         Log.d(TAG, response.result.message);
+                        showToast(response.result.message);
                         finish();
                     } else {
+                        showToast(response.result.message);
                         Log.d(TAG, response.result.message);
                     }
                 }
             }
         });
-
     }
-
     private void getProfileData() {
         viewModel.getViewProfileData().observe(this, new Observer<ViewProfileResponse>() {
             @Override
@@ -125,6 +119,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                             Log.d(TAG, response.result.getOperators().get(0).operator_name);
                             Log.d(TAG, response.getMessage());
                             setValues(response);
+                            hideProgress();
                         }
 
                     } else {
@@ -136,7 +131,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
-    public void setValues(ViewProfileResponse response) {
+    public void setValues(ViewProfileResponse response){
 
         //set mobile number
         txtMobileNumber.setText(response.result.profile.mobile_number);
@@ -192,7 +187,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    @Override
+    @OnClick({R.id.btnUpdate,R.id.radioYes,R.id.radioNo,R.id.radioMonthly,R.id.radioPayg,R.id.btnCancel,R.id.imgDate,R.id.imgBack,R.id.etDate})
     public void onClick(View view) {
 
         switch (view.getId()) {

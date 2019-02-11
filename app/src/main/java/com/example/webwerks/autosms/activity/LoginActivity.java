@@ -2,13 +2,11 @@ package com.example.webwerks.autosms.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.model.request.LoginRequest;
 import com.example.webwerks.autosms.model.response.LoginResponse;
@@ -72,7 +70,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnLogin:
-                login();
+                //login();
+                DashboardActivity.open(this);
                 break;
 
             case R.id.btnRegister:

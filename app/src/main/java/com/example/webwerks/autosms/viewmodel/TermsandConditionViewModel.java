@@ -29,7 +29,6 @@ public class TermsandConditionViewModel extends ViewModel {
     public void getTermsandCondtion(){
 
         final TermsResponse response = RestServices.getInstance().getTermsandCondition();
-        Log.d("TAGA",response.toString());
         getContent.setValue(response);
     }
 }

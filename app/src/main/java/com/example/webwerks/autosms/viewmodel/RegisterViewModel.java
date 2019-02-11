@@ -40,7 +40,6 @@ public class RegisterViewModel extends ViewModel {
     public void register(final RegisterRequest request){
 
         final RegisterResponse response = RestServices.getInstance().registerUser(request);
-        Log.d("TAGA",response.toString());
         registerData.setValue(response);
     }
 
@@ -48,7 +47,6 @@ public class RegisterViewModel extends ViewModel {
     public void fetchNetworkOperator(){
 
         final NetworkResponse response = RestServices.getInstance().networkOperatorList();
-        Log.d("TAGA",response.toString());
         fetchNetwokrList.setValue(response);
     }
 

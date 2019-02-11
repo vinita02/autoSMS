@@ -12,13 +12,16 @@ import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.model.response.TermsResponse;
 import com.example.webwerks.autosms.utils.CheckNetwork;
 import com.example.webwerks.autosms.viewmodel.TermsandConditionViewModel;
+import butterknife.BindView;
+import butterknife.OnClick;
 
-public class TermsAndConditionActivity extends BaseActivity implements View.OnClickListener {
+public class TermsAndConditionActivity extends BaseActivity {
 
     private static String TAG = "TermsAndConditionActivity";
-    ImageView imgBack;
-    TextView txtContent;
+    @BindView(R.id.imgBack)ImageView imgBack;
+    @BindView(R.id.txtContent)TextView txtContent;
     TermsandConditionViewModel viewModel;
+
 
 
     public static void open(RegisterActivity activity) {
@@ -32,14 +35,9 @@ public class TermsAndConditionActivity extends BaseActivity implements View.OnCl
 
     @Override
     protected void initViews() {
-        imgBack = findViewById(R.id.imgBack);
-        imgBack.setOnClickListener(this);
-        txtContent = findViewById(R.id.txtContent);
-
-
         viewModel = ViewModelProviders.of(this).get(TermsandConditionViewModel.class);
         getContent();
-        if (!CheckNetwork.isConnected(this)) {
+        if (!CheckNetwork.isConnected(this)){
             showToast("Enable Network State");
         }else {
             viewModel.getTermsandCondtion();
@@ -60,7 +58,7 @@ public class TermsAndConditionActivity extends BaseActivity implements View.OnCl
         });
     }
 
-    @Override
+    @OnClick({R.id.imgBack})
     public void onClick(View view) {
 
         switch (view.getId()){

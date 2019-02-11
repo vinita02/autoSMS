@@ -41,7 +41,6 @@ public class MyProfileViewModel extends ViewModel {
     public void updateProfile(final UpdateProfileRequest request){
 
         final UpdateProfileResponse response = RestServices.getInstance().updateProfile(request);
-        Log.d("TAGA",response.toString());
         updateProfile.setValue(response);
     }
 
@@ -49,7 +48,6 @@ public class MyProfileViewModel extends ViewModel {
     public void viewProfile(final ViewProfileRequest request){
 
         final ViewProfileResponse response = RestServices.getInstance().viewProfile(request);
-        Log.d("TAGA",response.toString());
         viewProfile.setValue(response);
     }
 

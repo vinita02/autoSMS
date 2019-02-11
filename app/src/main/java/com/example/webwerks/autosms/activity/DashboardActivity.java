@@ -6,13 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.webwerks.autosms.R;
 
-public class DashboardActivity extends BaseActivity implements View.OnClickListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
-    Button btnShareNow;
-    ImageView imgBack;
+public class DashboardActivity extends BaseActivity{
+
+    @BindView(R.id.btnShareNow) Button btnShareNow;
+    @BindView(R.id.imgBack) ImageView imgBack;
+
 
     public static void open(LoginActivity activity) {
         activity.startActivity(new Intent(activity,DashboardActivity.class));
@@ -25,23 +32,16 @@ public class DashboardActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void initViews() {
-        btnShareNow = findViewById(R.id.btnShareNow);
-        imgBack = findViewById(R.id.imgBack);
-        imgBack.setOnClickListener(this);
-        btnShareNow.setOnClickListener(this);
+
     }
 
 
-    @Override
+    @OnClick({R.id.btnShareNow,R.id.imgBack})
     public void onClick(View view) {
-
         switch (view.getId()){
-
             case R.id.btnShareNow:
                 ShareScreenActivity.open(this);
                 break;
-
-
             case R.id.imgBack:
                 onBackPressed();
                 break;
