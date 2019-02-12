@@ -35,6 +35,9 @@ public class Validation {
         }
         return check;
     }
+    public static boolean isValidValidationpassword(String password) {
+        return !TextUtils.isEmpty(password);
+    }
 
     public static boolean isValidValidationcode(String code) {
         return !TextUtils.isEmpty(code);

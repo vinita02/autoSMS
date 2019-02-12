@@ -40,6 +40,7 @@ public class RegisterActivity extends BaseActivity{
 
     private static String TAG = "RegisterActivity";
     @BindView(R.id.etMobile) EditText etmobile;
+    @BindView(R.id.etPassword) EditText etPassword;
     @BindView(R.id.etDate) EditText etDate;
     @BindView(R.id.etValidationCode) EditText etValidationCode;
     @BindView(R.id.imgMobilereward) ImageView imgMobilereward;
@@ -53,7 +54,7 @@ public class RegisterActivity extends BaseActivity{
     RadioButton smsUnlimed, payOption;
     RegisterViewModel viewModel;
     RegisterRequest request = new RegisterRequest();
-    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId;
+    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId,password;
     ArrayList<NetworkResponse.Operators> networkList = new ArrayList<>();
     boolean checkReward = true;
     public int startDay, startMonth, startYear;
@@ -70,7 +71,6 @@ public class RegisterActivity extends BaseActivity{
 
     @Override
     protected void initViews() {
-
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         //List of NetworkOperators
         showProgress();
@@ -94,7 +94,7 @@ public class RegisterActivity extends BaseActivity{
                     if (response.getResponse_code().equals("200")) {
                         Prefs.setToken(getApplicationContext(), response.result.token);
                         Prefs.setUserMobile(getApplicationContext(), response.result.mobile_number);
-                        MyProfileActivity.open(getApplicationContext());
+                        DashboardActivity.open(getApplicationContext());
                         finish();
                         showToast(response.getMessage());
                     } else {
@@ -179,8 +179,13 @@ public class RegisterActivity extends BaseActivity{
     private void register(){
         mobile = etmobile.getText().toString();
         validationCode = etValidationCode.getText().toString();
+        password = etPassword.getText().toString();
+        Log.d(TAG,password);
+
         if (!Validation.isValidMobile(mobile)) {
             showToast("Enter valid Mobile number");
+        }else if (!Validation.isValidValidationpassword(password)){
+            showToast("Enter Password");
         } else if (Validation.isValidMobilenetwork(operatorId)) {
             showToast("Select Mobile network");
         } else if (!ischeckPaymentopt()) {
@@ -194,6 +199,7 @@ public class RegisterActivity extends BaseActivity{
                 showToast("Enable Network State");
             } else {
                 request.setMobile_number(mobile);
+                request.setPassword(password);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);

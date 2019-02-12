@@ -59,7 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void showProgress(){
+    public void showProgress() {
         progress = new ProgressDialog(this);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
@@ -67,7 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         progress.show();
     }
 
-    public void hideProgress(){
+    public void hideProgress() {
         progress.dismiss();
     }
 }

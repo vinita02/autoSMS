@@ -42,18 +42,30 @@ import butterknife.Unbinder;
 public class MyProfileActivity extends BaseActivity {
 
     private static String TAG = "MyProfileActivity";
-    @BindView(R.id.txtMobileNumber) TextView txtMobileNumber;
-    @BindView(R.id.txtValidationCode) TextView txtValidationCode;
-    @BindView(R.id.spinner) Spinner spinner;
-    @BindView(R.id.imgBack) ImageView imgBack;
-    @BindView(R.id.imgDate) ImageView imgDate;
-    @BindView(R.id.etDate) EditText etDate;
-    @BindView(R.id.btnUpdate) Button btnUpdate;
-    @BindView(R.id.btnCancel) Button btnCancel;
-    @BindView(R.id.radioMonthly) RadioButton radioMonthly;
-    @BindView(R.id.radioPayg) RadioButton radioPayg;
-    @BindView(R.id.radioYes) RadioButton radioYes;
-    @BindView(R.id.radioNo) RadioButton radioNo;
+    @BindView(R.id.txtMobileNumber)
+    TextView txtMobileNumber;
+    @BindView(R.id.txtValidationCode)
+    TextView txtValidationCode;
+    @BindView(R.id.spinner)
+    Spinner spinner;
+    @BindView(R.id.imgBack)
+    ImageView imgBack;
+    @BindView(R.id.imgDate)
+    ImageView imgDate;
+    @BindView(R.id.etDate)
+    EditText etDate;
+    @BindView(R.id.btnUpdate)
+    Button btnUpdate;
+    @BindView(R.id.btnCancel)
+    Button btnCancel;
+    @BindView(R.id.radioMonthly)
+    RadioButton radioMonthly;
+    @BindView(R.id.radioPayg)
+    RadioButton radioPayg;
+    @BindView(R.id.radioYes)
+    RadioButton radioYes;
+    @BindView(R.id.radioNo)
+    RadioButton radioNo;
     MyProfileViewModel viewModel;
     String token, mobile;
     UpdateProfileRequest updateRequest = new UpdateProfileRequest();
@@ -62,22 +74,24 @@ public class MyProfileActivity extends BaseActivity {
     ArrayList<ViewProfileResponse.Operators> networkList = new ArrayList<>();
 
     public static void open(Context context) {
-        context.startActivity(new Intent(context, MyProfileActivity.class));}
+        context.startActivity(new Intent(context, MyProfileActivity.class));
+    }
+
     @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_my_profile;
     }
+
     @Override
     protected void initViews() {
         //token = Prefs.getToken(getApplicationContext());
-        //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTYwNDM5OSwiZXhwIjoxNTUwODEzOTk5LCJuYmYiOjE1NDk2MDQzOTksImp0aSI6Ijd1VlRyYVhqTFRrdlZ1cjEiLCJzdWIiOjE1LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.JhcQAYBgIAyuHeCAUOeF_ahfXVbO7RzCPwp00f-d8Zk";
-        token =  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTg3NDM1NywiZXhwIjoxNTUxMDgzOTU3LCJuYmYiOjE1NDk4NzQzNTcsImp0aSI6IjgzNFpvS0RGV1N2MGxkQk0iLCJzdWIiOjE3LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.59Ly77AiBylezt1OzH7cZpH8ydSL6aGCyKlOzdnPjE8";
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTk2NDAzNSwiZXhwIjoxNTUxMTczNjM1LCJuYmYiOjE1NDk5NjQwMzUsImp0aSI6IjI1RTU0eEJaN0dITVJJQnMiLCJzdWIiOjE5LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.I4hH0ELaaCruSmbUyDtW1nx6LCGy9HCXKcRYwX7OaQE";
         Log.d(TAG, token);
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
         //set View Profile
         showProgress();
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 getProfileData();
@@ -88,7 +102,7 @@ public class MyProfileActivity extends BaseActivity {
                     viewModel.viewProfile(viewRequest);
                 }
             }
-        },3000);
+        }, 3000);
 
         viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
             @Override
@@ -106,6 +120,7 @@ public class MyProfileActivity extends BaseActivity {
             }
         });
     }
+
     private void getProfileData() {
         viewModel.getViewProfileData().observe(this, new Observer<ViewProfileResponse>() {
             @Override
@@ -131,7 +146,7 @@ public class MyProfileActivity extends BaseActivity {
         });
     }
 
-    public void setValues(ViewProfileResponse response){
+    public void setValues(ViewProfileResponse response) {
 
         //set mobile number
         txtMobileNumber.setText(response.result.profile.mobile_number);
@@ -187,7 +202,7 @@ public class MyProfileActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btnUpdate,R.id.radioYes,R.id.radioNo,R.id.radioMonthly,R.id.radioPayg,R.id.btnCancel,R.id.imgDate,R.id.imgBack,R.id.etDate})
+    @OnClick({R.id.btnUpdate, R.id.radioYes, R.id.radioNo, R.id.radioMonthly, R.id.radioPayg, R.id.btnCancel, R.id.imgDate, R.id.imgBack, R.id.etDate})
     public void onClick(View view) {
 
         switch (view.getId()) {

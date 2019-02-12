@@ -34,6 +34,7 @@ public interface ApiServices {
    @FormUrlEncoded
    Single<RegisterResponse> userRegister(
            @Field("mobile_number") String mobile_number,
+           @Field("password") String password,
            @Field("activation_code") String activation_code,
            @Field("operator_id") int operator,
            @Field("sim_type") String sim_type,

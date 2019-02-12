@@ -2,12 +2,12 @@ package com.example.webwerks.autosms.activity;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import com.example.webwerks.autosms.R;
+import com.example.webwerks.autosms.utils.Prefs;
 
 public class SplaceActivity extends BaseActivity {
+    private String launch_activity;
+    private Intent mainIntent;
 
     @Override
     protected int getLayoutResourceId() {
@@ -21,8 +21,14 @@ public class SplaceActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(SplaceActivity.this, LoginActivity.class);
-                startActivity(i);
+                launch_activity = Prefs.getLaunchActivity(SplaceActivity.this);
+
+                if (launch_activity.equalsIgnoreCase("dashboardActivity")) {
+                    mainIntent = new Intent(SplaceActivity.this, DashboardActivity.class);
+                } else {
+                    mainIntent = new Intent(SplaceActivity.this, LoginActivity.class);
+                }
+                startActivity(mainIntent);
                 finish();
             }
         }, SPLASH_TIME_OUT);

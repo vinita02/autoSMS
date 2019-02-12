@@ -45,7 +45,7 @@ public class RestServices {
     }
 
     public RegisterResponse registerUser(RegisterRequest request){
-        Single <RegisterResponse> registerObservable = apiServices.userRegister(request.getMobile_number(),request.getActivation_code(),
+        Single <RegisterResponse> registerObservable = apiServices.userRegister(request.getMobile_number(),request.getPassword(),request.getActivation_code(),
                 request.getOperator(),request.getSim_type(),request.getSms_plan(),request.getBilling_date());
 
         RegisterResponse response = attachCommonRxProperiesAndExecute(registerObservable,RegisterResponse.class);

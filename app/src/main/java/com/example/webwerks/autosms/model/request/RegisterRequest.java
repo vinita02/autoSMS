@@ -3,6 +3,7 @@ package com.example.webwerks.autosms.model.request;
 public class RegisterRequest {
 
     private String mobile_number;
+    private String password;
     private String  activation_code;
     private int operator;
     private String sim_type;
@@ -15,6 +16,14 @@ public class RegisterRequest {
 
     public void setMobile_number(String mobile_number) {
         this.mobile_number = mobile_number;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getActivation_code() {

@@ -6,12 +6,23 @@ import android.preference.PreferenceManager;
 
 public class Prefs {
 
+    private static final String PREF_LAUNCH_ACTIVITY = "launch_activity";
     private static final String USER_DATA = "user_data";
     private static final String TOKEN = "token";
     private static final String USER_MOBILE = "mobile";
 
     private static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
+    }
+
+    public static void setLaunchActivity(Context ctx, String launch_activity) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(PREF_LAUNCH_ACTIVITY, launch_activity);
+        editor.apply();
+    }
+
+    public static String getLaunchActivity(Context ctx) {
+        return getSharedPreferences(ctx).getString(PREF_LAUNCH_ACTIVITY, "");
     }
 
 
