@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/myprofile_background"
     android:padding="8dp"
+    android:id="@+id/root"
     tools:context=".activity.MyProfileActivity">
 
     <RelativeLayout

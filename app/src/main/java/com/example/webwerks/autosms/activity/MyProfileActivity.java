@@ -1,5 +1,6 @@
 package com.example.webwerks.autosms.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ import com.example.webwerks.autosms.model.response.ViewProfileResponse;
 import com.example.webwerks.autosms.utils.CheckNetwork;
 import com.example.webwerks.autosms.utils.DateFormat;
 import com.example.webwerks.autosms.utils.Prefs;
+import com.example.webwerks.autosms.utils.Progress;
 import com.example.webwerks.autosms.viewmodel.MyProfileViewModel;
 
 import java.text.DateFormatSymbols;
@@ -66,6 +69,10 @@ public class MyProfileActivity extends BaseActivity {
     RadioButton radioYes;
     @BindView(R.id.radioNo)
     RadioButton radioNo;
+    @BindView(R.id.root)
+    RelativeLayout root;
+    Progress progress;
+
     MyProfileViewModel viewModel;
     String token, mobile;
     UpdateProfileRequest updateRequest = new UpdateProfileRequest();
@@ -84,12 +91,13 @@ public class MyProfileActivity extends BaseActivity {
 
     @Override
     protected void initViews() {
+        progress = new Progress(this,root);
+        progress.showProgresBar();
         //token = Prefs.getToken(getApplicationContext());
         token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTk2NDAzNSwiZXhwIjoxNTUxMTczNjM1LCJuYmYiOjE1NDk5NjQwMzUsImp0aSI6IjI1RTU0eEJaN0dITVJJQnMiLCJzdWIiOjE5LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.I4hH0ELaaCruSmbUyDtW1nx6LCGy9HCXKcRYwX7OaQE";
         Log.d(TAG, token);
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
         //set View Profile
-        showProgress();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -126,6 +134,7 @@ public class MyProfileActivity extends BaseActivity {
             @Override
             public void onChanged(@Nullable ViewProfileResponse response) {
                 if (response != null) {
+                    progress.hideProgressBar();
                     if (response.getResponse_code().equals("200")) {
 
                         if (response.error != null) {
@@ -134,7 +143,7 @@ public class MyProfileActivity extends BaseActivity {
                             Log.d(TAG, response.result.getOperators().get(0).operator_name);
                             Log.d(TAG, response.getMessage());
                             setValues(response);
-                            hideProgress();
+                            //progress.hideProgressBar();
                         }
 
                     } else {
