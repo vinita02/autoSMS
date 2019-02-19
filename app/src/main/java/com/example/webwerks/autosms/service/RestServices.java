@@ -3,12 +3,15 @@ package com.example.webwerks.autosms.service;
 
 import com.example.webwerks.autosms.model.request.LoginRequest;
 import com.example.webwerks.autosms.model.request.RegisterRequest;
+import com.example.webwerks.autosms.model.request.SendMessagesIdRequest;
+import com.example.webwerks.autosms.model.request.SendMessagesRequest;
 import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
 import com.example.webwerks.autosms.model.response.BaseResponse;
 import com.example.webwerks.autosms.model.response.LoginResponse;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
+import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.model.response.TermsResponse;
 import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.model.response.ViewProfileResponse;
@@ -81,6 +84,21 @@ public class RestServices {
         TermsResponse response = attachCommonRxProperiesAndExecute(termsResponse,TermsResponse.class);
         return response;
     }
+
+    public SendMessagesResponse sendMessagesResponse(SendMessagesRequest request){
+
+        Single <SendMessagesResponse> messagesResponse = apiServices.sendMessages(request.getMobile_number());
+        SendMessagesResponse response = attachCommonRxProperiesAndExecute(messagesResponse,SendMessagesResponse.class);
+        return response;
+    }
+
+    public BaseResponse sendMessagesIdResponse(SendMessagesIdRequest request){
+
+        Single <BaseResponse> messagesIdResponse = apiServices.sendMessagesId(request);
+        BaseResponse response = attachCommonRxProperiesAndExecute(messagesIdResponse,BaseResponse.class);
+        return response;
+    }
+
 
 
     private <E> E attachCommonRxProperiesAndExecute(Single<E> observable,final Class errorClass){
