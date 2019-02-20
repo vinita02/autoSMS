@@ -21,12 +21,17 @@ public class SplaceActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+//                mainIntent = new Intent(SplaceActivity.this, RegisterActivity.class);
+//                startActivity(mainIntent);
+//                finish();
+
                 launch_activity = Prefs.getLaunchActivity(SplaceActivity.this);
 
                 if (launch_activity.equalsIgnoreCase("dashboardActivity")) {
                     mainIntent = new Intent(SplaceActivity.this, DashboardActivity.class);
-                } else {
-                    mainIntent = new Intent(SplaceActivity.this, LoginActivity.class);
+                }
+                else {
+                    mainIntent = new Intent(SplaceActivity.this, RegisterActivity.class);
                 }
                 startActivity(mainIntent);
                 finish();

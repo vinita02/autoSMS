@@ -93,8 +93,8 @@ public class MyProfileActivity extends BaseActivity {
     protected void initViews() {
         progress = new Progress(this,root);
         progress.showProgresBar();
-        //token = Prefs.getToken(getApplicationContext());
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTk2NDAzNSwiZXhwIjoxNTUxMTczNjM1LCJuYmYiOjE1NDk5NjQwMzUsImp0aSI6IjI1RTU0eEJaN0dITVJJQnMiLCJzdWIiOjE5LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.I4hH0ELaaCruSmbUyDtW1nx6LCGy9HCXKcRYwX7OaQE";
+        token = Prefs.getToken(getApplicationContext());
+        //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTk2NDAzNSwiZXhwIjoxNTUxMTczNjM1LCJuYmYiOjE1NDk5NjQwMzUsImp0aSI6IjI1RTU0eEJaN0dITVJJQnMiLCJzdWIiOjE5LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.I4hH0ELaaCruSmbUyDtW1nx6LCGy9HCXKcRYwX7OaQE";
         Log.d(TAG, token);
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
         //set View Profile
@@ -268,9 +268,7 @@ public class MyProfileActivity extends BaseActivity {
 
     //Billing Date
     public void billingDate() {
-
         try {
-
             int mYear, mMonth, mDay = 0;
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
@@ -285,14 +283,21 @@ public class MyProfileActivity extends BaseActivity {
                             String[] monthNames = symbols.getMonths();
                             String month = monthNames[monthOfYear];
                             startDay = dayOfMonth;
-                            startMonth = monthOfYear;
+                            startMonth = monthOfYear +1;
                             startYear = year;
                             String date = startMonth + "-" + startDay + "-" + startYear;
                             billingDate = DateFormat.Date(date);
                             etDate.setText(billingDate);
+                            Log.d(TAG, billingDate);
+                            // TODO Auto-generated method stub
+//                            c.set(Calendar.YEAR, year);
+//                            c.set(Calendar.MONTH, monthOfYear);
+//                            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//                            billingDate =  view.getYear()+"-"+(view.getMonth()+1)+"-"+view.getDayOfMonth();
+//                            etDate.setText(billingDate);
+
                         }
                     }, mYear, mMonth, mDay);
-
             Calendar calendar = Calendar.getInstance();
             calendar.set(2017, 0, 1);
             datePickerDialog.getDatePicker().setMinDate(minDate);
@@ -300,6 +305,5 @@ public class MyProfileActivity extends BaseActivity {
         } catch (Exception e) {
             //e.printStackTrace();
         }
-
     }
 }

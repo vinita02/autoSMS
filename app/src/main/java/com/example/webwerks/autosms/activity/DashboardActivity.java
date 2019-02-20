@@ -51,6 +51,7 @@ public class DashboardActivity extends BaseActivity {
     ArrayList<Contacts.User> num = new ArrayList<>();
     SendMessagesResponse response = new SendMessagesResponse();
     private static final int PERMISSION_REQUEST = 100;
+    String mobile;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, DashboardActivity.class));
@@ -65,6 +66,9 @@ public class DashboardActivity extends BaseActivity {
     protected void initViews() {
         // ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
         Prefs.setLaunchActivity(DashboardActivity.this, "dashboardActivity");
+        mobile = Prefs.getUserMobile(this);
+        Log.d("TAGA",mobile);
+
         viewModel = ViewModelProviders.of(this).get(MessagesViewModel.class);
         //get user Messages
         Handler handler = new Handler();
@@ -75,11 +79,17 @@ public class DashboardActivity extends BaseActivity {
                 if (!CheckNetwork.isConnected(getApplicationContext())) {
                     showToast("Enable Network State");
                 } else {
-                    request.setMobile_number("7531597893");
+                    request.setMobile_number(mobile);
                     viewModel.getMessages(request);
                 }
             }
         }, 3000);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("TAGA","onStart");
     }
 
     private void getMessages() {
@@ -91,11 +101,12 @@ public class DashboardActivity extends BaseActivity {
                     if (data.getResponse_code().equals("200")) {
 //                        response = data;
 //                        checkSMSPermission(data);
-                        if (data.result.size()!=0){
-                            response = data;
-                            checkSMSPermission(data);
-                        }else {
-                            Log.d("TAGA","service not call");
+                        if (data.result.size() != 0) {
+                          //  response = data;
+                           // checkSMSPermission(data);
+                            Log.d("TAGA", "service call");
+                        } else {
+                            Log.d("TAGA", "service not call");
                         }
                     }
                 }

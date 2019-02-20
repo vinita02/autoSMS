@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.adapter.MobileNetworkAdapter;
@@ -92,6 +93,7 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected void initViews() {
+        Prefs.setLaunchActivity(RegisterActivity.this, "registerActivity");
         progress = new Progress(this, root);
         progress.showProgresBar();
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
@@ -209,9 +211,10 @@ public class RegisterActivity extends BaseActivity {
 
         if (!Validation.isValidMobile(mobile)) {
             showToast("Enter valid Mobile number");
-        } else if (!Validation.isValidValidationpassword(password)) {
-            showToast("Enter Password");
-        } else if (Validation.isValidMobilenetwork(operatorId)) {
+        }
+//        else if (!Validation.isValidValidationpassword(password)) {
+//            showToast("Enter Password"); }
+        else if (Validation.isValidMobilenetwork(operatorId)) {
             showToast("Select Mobile network");
         } else if (!ischeckPaymentopt()) {
             showToast("Select Mobile sim");
@@ -224,7 +227,7 @@ public class RegisterActivity extends BaseActivity {
                 showToast("Enable Network State");
             } else {
                 request.setMobile_number(mobile);
-                request.setPassword(password);
+               // request.setPassword(password);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);
@@ -263,12 +266,19 @@ public class RegisterActivity extends BaseActivity {
                             String[] monthNames = symbols.getMonths();
                             String month = monthNames[monthOfYear];
                             startDay = dayOfMonth;
-                            startMonth = monthOfYear;
+                            startMonth = monthOfYear +1;
                             startYear = year;
-                            billingDate = startMonth + "-" + startDay + "-" + startYear;
-                            String date = DateFormat.Date(billingDate);
-                            etDate.setText(date);
-                            Log.d(TAG, date);
+                            String date = startMonth + "-" + startDay + "-" + startYear;
+                            billingDate = DateFormat.Date(date);
+                            etDate.setText(billingDate);
+                            Log.d(TAG, billingDate);
+                            // TODO Auto-generated method stub
+//                            c.set(Calendar.YEAR, year);
+//                            c.set(Calendar.MONTH, monthOfYear);
+//                            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//                            billingDate =  view.getYear()+"-"+(view.getMonth()+1)+"-"+view.getDayOfMonth();
+//                            etDate.setText(billingDate);
+
                         }
                     }, mYear, mMonth, mDay);
             Calendar calendar = Calendar.getInstance();

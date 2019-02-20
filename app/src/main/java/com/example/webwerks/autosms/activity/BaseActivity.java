@@ -14,7 +14,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public String DEVICE_ID;
     public int startDay, startMonth, startYear;
-    public String date;
+
 
 
 
@@ -27,6 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         getDeviceId();
         initViews();
     }
+
 
     protected abstract int getLayoutResourceId();
 

@@ -74,24 +74,29 @@ public class ForgroundService extends Service {
         String title = intent.getStringExtra("json_data");
         String respo_data = intent.getStringExtra("respo_data");
         SendMessagesResponse response = gson.fromJson(respo_data, SendMessagesResponse.class);
-        num = gson.fromJson(title, Contacts.class);
-        if (num != null) {
 
-            for (int i = 0; i < num.size(); i++) {
-                String message = num.get(i).getMessages();
-                String tempMobileNumber = num.get(i).getMobile();
-                int id = num.get(i).getId();
-                String check_id = String.valueOf(id);
-                String check = Prefs.getDeliverdIds(getApplication());
-                if (check.contains(check_id)) {
-                    Log.d("MySimpleService", "Match");
-                } else {
-                    Log.d("MySimpleService", "NotMatch");
-                    demo(tempMobileNumber, message, id);
+        if (response != null) {
 
-                }
+            for (int i = 0; i < response.result.size(); i++) {
+
+                String message = response.result.get(i).message_content;
+                String phone = response.result.get(i).mobile_number;
+                int id = Integer.parseInt(response.result.get(i).message_id);
+
+                Log.d("MySimpleService","message "+ message);
+                Log.d("MySimpleService","phone "+ phone);
+                Log.d("MySimpleService","id"+ id);
+
+//                String check_id = String.valueOf(id);
+//                String check = Prefs.getDeliverdIds(getApplication());
+//                if (check.contains(check_id)) {
+//                    Log.d("MySimpleService", "Match");
+//                } else {
+//                    Log.d("MySimpleService", "NotMatch");
+//                    demo(tempMobileNumber, message, id);
+//
+//                }
             }
-
         }
     }
 
