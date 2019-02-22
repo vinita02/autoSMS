@@ -32,6 +32,7 @@ import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.utils.Progress;
 import com.example.webwerks.autosms.utils.Validation;
 import com.example.webwerks.autosms.viewmodel.RegisterViewModel;
+import com.rilixtech.CountryCodePicker;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -71,11 +72,13 @@ public class RegisterActivity extends BaseActivity {
     TextView txtTerms;
     @BindView(R.id.root)
     RelativeLayout root;
+    @BindView(R.id.spCountrycode)
+    CountryCodePicker spCountrycode;
 
     RadioButton smsUnlimed, payOption;
     RegisterViewModel viewModel;
     RegisterRequest request = new RegisterRequest();
-    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId, password;
+    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId, password,prefix;
     ArrayList<NetworkResponse.Operators> networkList = new ArrayList<>();
     boolean checkReward = true;
     public int startDay, startMonth, startYear;
@@ -128,7 +131,9 @@ public class RegisterActivity extends BaseActivity {
                 }
             }
         });
+
     }
+
 
     private void getNetworkList() {
         viewModel.getNetworkList().observe(this, new Observer<NetworkResponse>() {
@@ -204,16 +209,17 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void register() {
+
         mobile = etmobile.getText().toString();
         validationCode = etValidationCode.getText().toString();
         password = etPassword.getText().toString();
-        Log.d(TAG, password);
+        spCountrycode.registerPhoneNumberTextView(etmobile);
+        prefix = spCountrycode.getSelectedCountryCodeWithPlus();
+        Log.d("number",prefix);
 
-        if (!Validation.isValidMobile(mobile)) {
-            showToast("Enter valid Mobile number");
+        if (!spCountrycode.isValid()){
+            showToast("Mobile number not valid");
         }
-//        else if (!Validation.isValidValidationpassword(password)) {
-//            showToast("Enter Password"); }
         else if (Validation.isValidMobilenetwork(operatorId)) {
             showToast("Select Mobile network");
         } else if (!ischeckPaymentopt()) {
@@ -226,8 +232,8 @@ public class RegisterActivity extends BaseActivity {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
             } else {
-                request.setMobile_number(mobile);
-               // request.setPassword(password);
+
+                request.setMobile_number(prefix + mobile);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);

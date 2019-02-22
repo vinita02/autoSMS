@@ -1,209 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-<android.support.v7.widget.CardView android:id="@+id/cardView"
-    android:layout_margin="10dp"
-    app:cardCornerRadius="12dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:scrollbars="vertical"
+        app:cardCornerRadius="12dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/llMobile"
-                android:layout_marginTop="4dp"
-                android:weightSum="2"
-                android:padding="10dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:layout_weight="0.2"
-                    android:layout_width="0dp"
-                    android:text="1"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_weight="1.8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mobile_number"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/arial_rounded"
-                    android:textColor="@color/material_light_blue_500"
-                    android:textSize="18sp"/>
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/etMobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text=""
-                android:maxLength="10"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                android:digits="0123456789"
-                android:fontFamily="@font/arial_rounded"
-                android:inputType="phone"/>
-            <LinearLayout
-                android:visibility="gone"
-                android:id="@+id/llPassword"
                 android:layout_marginTop="4dp"
-                android:weightSum="2"
-                android:padding="10dp"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:padding="10dp"
+                android:weightSum="2">
 
 
                 <TextView
-                    android:layout_weight="0.2"
-                    android:layout_width="0dp"
-                    android:text="2"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_weight="1.8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/password"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/blue_circle_icon"
                     android:fontFamily="@font/arial_rounded"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.8"
+                    android:fontFamily="@font/arial_rounded"
+                    android:text="@string/mobile_number"
                     android:textColor="@color/material_light_blue_500"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <com.rilixtech.CountryCodePicker
+                    android:id="@+id/spCountrycode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:ccp_countryPreference="GB,IN,US,NZ"
+                    app:ccp_defaultNameCode="GB"
+                    />
+
+                <EditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:singleLine="true"
+                    android:fontFamily="@font/arial_rounded"
+                    android:digits="0123456789"
+                    android:maxLength="15"
+                    />
+            </LinearLayout>
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="40dp"-->
+                <!--android:weightSum="1.5"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<com.rilixtech.CountryCodePicker-->
+                        <!--android:id="@+id/spCountrycode"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:layout_weight="0.8"-->
+                        <!--android:layout_marginEnd="10dp"-->
+                        <!--android:backgroundTint="@color/material_light_blue_500"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"/>-->
+                <!--&lt;!&ndash;<View&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_below="@+id/spCountrycode"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="80dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="1dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginStart="40dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginEnd="40dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="@color/material_grey_500" />&ndash;&gt;-->
+                <!--<EditText-->
+                    <!--android:id="@+id/etMobile"-->
+                    <!--android:layout_weight="0.7"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginEnd="40dp"-->
+                    <!--android:digits="0123456789"-->
+                    <!--android:fontFamily="@font/arial_rounded"-->
+                    <!--android:inputType="phone"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:maxLength="15"-->
+                    <!--android:text="" />-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="40dp"-->
+                <!--android:layout_marginEnd="40dp"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<Spinner-->
+                    <!--android:id="@+id/spCountrycode"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="40dp"-->
+                    <!--android:layout_marginEnd="40dp"-->
+                    <!--android:backgroundTint="@color/material_light_blue_500"-->
+                    <!--android:padding="20dp"-->
+                    <!--android:spinnerMode="dropdown" />-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/etMobile"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginEnd="40dp"-->
+                    <!--android:digits="0123456789"-->
+                    <!--android:fontFamily="@font/arial_rounded"-->
+                    <!--android:inputType="phone"-->
+                    <!--android:maxLength="10"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:text="" />-->
+
+            <!--</LinearLayout>-->
+
+            <LinearLayout
+                android:id="@+id/llPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:weightSum="2">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/blue_circle_icon"
+                    android:fontFamily="@font/arial_rounded"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.8"
+                    android:fontFamily="@font/arial_rounded"
+                    android:text="@string/password"
+                    android:textColor="@color/material_light_blue_500"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <EditText
-                android:visibility="gone"
                 android:id="@+id/etPassword"
-                android:layout_marginEnd="40dp"
                 android:layout_width="match_parent"
-                android:inputType="textPassword"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
                 android:fontFamily="@font/arial_rounded"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:text=""
-                android:layout_marginStart="40dp"
-                android:layout_height="wrap_content" />
+                android:visibility="gone" />
 
 
             <LinearLayout
                 android:id="@+id/llNetwork"
-                android:layout_marginTop="4dp"
-                android:weightSum="2"
-                android:padding="10dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="2">
 
                 <TextView
-                    android:layout_weight="0.2"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/blue_circle_icon"
+                    android:fontFamily="@font/arial_rounded"
+                    android:gravity="center"
                     android:text="2"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
                     android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:layout_weight="1.8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.8"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/network"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textColor="@color/material_light_blue_500"
-                    android:textSize="18sp"/>
-            </LinearLayout>
-
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/material_light_blue_500"
-                    android:padding="2dp"
-                    android:spinnerMode="dropdown"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:background="@color/material_grey_500"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"/>
-
-            <LinearLayout
-                android:id="@+id/llPayment"
-                android:layout_marginTop="4dp"
-                android:weightSum="2"
-                android:padding="10dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_weight="0.2"
-                    android:layout_width="0dp"
-                    android:text="3"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_weight="1.8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sim_plan"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
-                    android:padding="2dp"
-                    android:fontFamily="@font/arial_rounded"
-                    android:textColor="@color/material_light_blue_500"
-                    android:textSize="18sp"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <Spinner
+                android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
-                >
+                android:backgroundTint="@color/material_light_blue_500"
+                android:padding="2dp"
+                android:spinnerMode="dropdown" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:background="@color/material_grey_500" />
+
+            <LinearLayout
+                android:id="@+id/llPayment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/blue_circle_icon"
+                    android:fontFamily="@font/arial_rounded"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.8"
+                    android:fontFamily="@font/arial_rounded"
+                    android:padding="2dp"
+                    android:text="@string/sim_plan"
+                    android:textColor="@color/material_light_blue_500"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:orientation="horizontal">
 
                 <RadioGroup
                     android:id="@+id/rgMontlyopt"
@@ -215,18 +300,18 @@
                         android:id="@+id/radioMonthly"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/monthly"
                         android:fontFamily="@font/arial_rounded"
-                        android:textSize="18sp"/>
+                        android:text="@string/monthly"
+                        android:textSize="18sp" />
 
                     <RadioButton
                         android:id="@+id/radioPayg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/payg"
-                        android:fontFamily="@font/arial_rounded"
                         android:layout_marginStart="30dp"
-                        android:textSize="18sp"/>
+                        android:fontFamily="@font/arial_rounded"
+                        android:text="@string/payg"
+                        android:textSize="18sp" />
                 </RadioGroup>
 
                 <!--<CheckBox
@@ -250,35 +335,35 @@
 
             <LinearLayout
                 android:id="@+id/llBillingDate"
-                android:layout_marginTop="4dp"
-                android:weightSum="2"
-                android:padding="10dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="2">
 
                 <TextView
-                    android:layout_weight="0.2"
-                    android:layout_width="0dp"
-                    android:text="4"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_weight="1.8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/billing_date"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/blue_circle_icon"
                     android:fontFamily="@font/arial_rounded"
+                    android:gravity="center"
+                    android:text="4"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.8"
+                    android:fontFamily="@font/arial_rounded"
+                    android:text="@string/billing_date"
                     android:textColor="@color/material_light_blue_500"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -286,12 +371,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/not_mandatory"
-                android:textStyle="bold"
                 android:layout_marginStart="50dp"
-                android:textColor="@color/colorAccent"
                 android:fontFamily="@font/arial_rounded"
-                android:textSize="12sp"/>
+                android:text="@string/not_mandatory"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -299,69 +384,68 @@
 
                 <EditText
                     android:id="@+id/etDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="60dp"
                     android:clickable="false"
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text=""
                     android:fontFamily="@font/arial_rounded"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="60dp"/>
+                    android:maxLines="1"
+                    android:text="" />
 
                 <ImageView
                     android:id="@+id/imgDate"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="30dp"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/calendar"/>
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/calendar" />
             </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/llPlans"
-                android:layout_marginTop="4dp"
-                android:weightSum="2"
-                android:padding="10dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="2">
 
                 <TextView
-                    android:layout_weight="0.2"
-                    android:layout_width="0dp"
-                    android:text="5"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_weight="1.8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/sms_plan_sentance"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/blue_circle_icon"
                     android:fontFamily="@font/arial_rounded"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.8"
+                    android:fontFamily="@font/arial_rounded"
+                    android:text="@string/sms_plan_sentance"
                     android:textColor="@color/material_light_blue_500"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
-                >
+                android:orientation="horizontal">
 
                 <RadioGroup
                     android:id="@+id/rgSmsplan"
@@ -373,98 +457,97 @@
                         android:id="@+id/radioYes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/yes"
                         android:fontFamily="@font/arial_rounded"
-                        android:textSize="18sp"/>
+                        android:text="@string/yes"
+                        android:textSize="18sp" />
 
                     <RadioButton
                         android:id="@+id/radioNo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/no"
-                        android:fontFamily="@font/arial_rounded"
                         android:layout_marginStart="30dp"
-                        android:textSize="18sp"/>
+                        android:fontFamily="@font/arial_rounded"
+                        android:text="@string/no"
+                        android:textSize="18sp" />
                 </RadioGroup>
 
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/llValidationcode"
-                android:weightSum="2"
-                android:padding="10dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:weightSum="2">
 
 
                 <TextView
-                    android:layout_weight="0.25"
-                    android:layout_width="0dp"
-                    android:text="6"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/blue_circle_icon"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_weight="1.2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/validation_code"
-                    android:textStyle="bold"
-                    android:textColor="@color/material_light_blue_500"
-                    android:layout_marginStart="8dp"
-                    android:textSize="18sp"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/blue_circle_icon"
                     android:fontFamily="@font/arial_rounded"
-                    />
+                    android:gravity="center"
+                    android:text="6"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.2"
+                    android:fontFamily="@font/arial_rounded"
+                    android:text="@string/validation_code"
+                    android:textColor="@color/material_light_blue_500"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
 
                 <EditText
                     android:id="@+id/etValidationCode"
-                    android:layout_weight="0.8"
-                    android:layout_marginEnd="40dp"
                     android:layout_width="0dp"
-                    android:inputType="textPassword"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="40dp"
+                    android:layout_weight="0.8"
                     android:fontFamily="@font/arial_rounded"
-                    android:layout_height="wrap_content" />
+                    android:inputType="textPassword" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/llMobilereward"
-                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="6dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:padding="6dp">
 
                 <ImageView
                     android:id="@+id/imgMobilereward"
                     android:layout_width="40dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
+                    android:layout_height="40dp"
                     android:background="@drawable/reward_select"
-                    android:layout_height="40dp" />
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mobile_reward_condition"
-                    android:textStyle="bold"
-                    android:gravity="center"
                     android:layout_marginStart="6dp"
                     android:fontFamily="@font/arial_rounded"
-                    android:textSize="18sp"/>
+                    android:gravity="center"
+                    android:text="@string/mobile_reward_condition"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
 </ScrollView>
