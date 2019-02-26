@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 
 android {
@@ -51,5 +52,6 @@ dependencies {
 
     //country code
     implementation 'com.github.joielechong:countrycodepicker:2.2.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 
 }

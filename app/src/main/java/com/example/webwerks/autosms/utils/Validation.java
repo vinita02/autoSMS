@@ -25,16 +25,25 @@ public class Validation {
         return bs;
     }
 
-    public static boolean isValidMobile(String phone) {
-        boolean check = false;
+//    public static boolean isValidMobile(String phone) {
+//        boolean check = false;
+//
+//        if (phone.length() != 10) {
+//            check = false;
+//        } else {
+//            check = true;
+//        }
+//        return check;
+//    }
 
-        if (phone.length() != 10) {
-            check = false;
+    public static boolean isValidPhone(CharSequence phone) {
+        if (TextUtils.isEmpty(phone)) {
+            return false;
         } else {
-            check = true;
+            return android.util.Patterns.PHONE.matcher(phone).matches();
         }
-        return check;
     }
+
     public static boolean isValidValidationpassword(String password) {
         return !TextUtils.isEmpty(password);
     }

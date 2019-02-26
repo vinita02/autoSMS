@@ -121,6 +121,8 @@ public class RegisterActivity extends BaseActivity {
                     if (response.getResponse_code().equals("200")) {
                         Prefs.setToken(getApplicationContext(), response.result.token);
                         Prefs.setUserMobile(getApplicationContext(), response.result.mobile_number);
+                        Log.d(TAG,response.result.activation_code);
+                        Prefs.setActivationCode(getApplication(),response.result.activation_code);
                         DashboardActivity.open(getApplicationContext());
                         finish();
                         showToast(response.getMessage());

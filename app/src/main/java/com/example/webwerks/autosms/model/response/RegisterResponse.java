@@ -21,6 +21,11 @@ public class RegisterResponse extends BaseResponse{
         public String activation_code_id;
 
 
+
+        @SerializedName("activation_code")
+        public String activation_code;
+
+
         @SerializedName("operator")
         public Operator operator;
 

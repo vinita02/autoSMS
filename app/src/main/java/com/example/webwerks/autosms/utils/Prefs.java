@@ -11,6 +11,7 @@ public class Prefs {
     private static final String TOKEN = "token";
     private static final String USER_MOBILE = "mobile";
     private static final String DELIVERD_IDS = "deliverIDs";
+    private static final String ACTIVATION_CODE = "activation_code";
 
     private static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -67,5 +68,15 @@ public class Prefs {
 
     public static String getDeliverdIds(Context ctx) {
         return getSharedPreferences(ctx).getString(DELIVERD_IDS, "");
+    }
+
+    public static void setActivationCode(Context ctx, String str) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(ACTIVATION_CODE, str);
+        editor.apply();
+    }
+
+    public static String getActivationCode(Context ctx) {
+        return getSharedPreferences(ctx).getString(ACTIVATION_CODE, "");
     }
 }

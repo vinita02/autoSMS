@@ -96,8 +96,8 @@
             android:drawableRight="@drawable/contact"
             android:fontFamily="@font/arial_rounded"
             android:inputType="phone"
-            android:maxLength="10"
-            android:maxLines="1"
+            android:singleLine="true"
+            android:maxLength="15"
             android:textCursorDrawable="@null"
             android:textColor="@color/white"
             android:text="" />
