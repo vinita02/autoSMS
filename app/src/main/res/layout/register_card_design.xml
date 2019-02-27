@@ -382,28 +382,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/etDate"
+                <Spinner
+                    android:id="@+id/spDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
-                    android:layout_marginEnd="60dp"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:fontFamily="@font/arial_rounded"
-                    android:maxLines="1"
-                    android:text="" />
+                    android:layout_marginEnd="40dp"
+                    android:backgroundTint="@color/material_light_blue_500"
+                    android:padding="2dp"
+                    android:spinnerMode="dropdown"
+                    android:entries="@array/date_arrays"
+                    android:prompt="@string/date_prompt"/>
 
-                <ImageView
-                    android:id="@+id/imgDate"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="30dp"
-                    android:background="@drawable/calendar" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:layout_below="@+id/spDate"
+                    android:background="@color/material_grey_500" />
+
             </RelativeLayout>
 
             <LinearLayout

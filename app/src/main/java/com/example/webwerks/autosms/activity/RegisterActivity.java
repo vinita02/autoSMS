@@ -50,16 +50,14 @@ public class RegisterActivity extends BaseActivity {
     EditText etmobile;
     @BindView(R.id.etPassword)
     EditText etPassword;
-    @BindView(R.id.etDate)
-    EditText etDate;
     @BindView(R.id.etValidationCode)
     EditText etValidationCode;
     @BindView(R.id.imgMobilereward)
     ImageView imgMobilereward;
     @BindView(R.id.imgBack)
     ImageView imgBack;
-    @BindView(R.id.imgDate)
-    ImageView imgDate;
+    @BindView(R.id.spDate)
+    Spinner spDate;
     @BindView(R.id.spinner)
     Spinner spinner;
     @BindView(R.id.rgSmsplan)
@@ -74,14 +72,12 @@ public class RegisterActivity extends BaseActivity {
     RelativeLayout root;
     @BindView(R.id.spCountrycode)
     CountryCodePicker spCountrycode;
-
     RadioButton smsUnlimed, payOption;
     RegisterViewModel viewModel;
     RegisterRequest request = new RegisterRequest();
-    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId, password,prefix;
+    String smsPlan, paymentOpt, mobile, validationCode, billingDate, operatorId, password, prefix;
     ArrayList<NetworkResponse.Operators> networkList = new ArrayList<>();
     boolean checkReward = true;
-    public int startDay, startMonth, startYear;
     private Progress progress;
 
 
@@ -121,8 +117,8 @@ public class RegisterActivity extends BaseActivity {
                     if (response.getResponse_code().equals("200")) {
                         Prefs.setToken(getApplicationContext(), response.result.token);
                         Prefs.setUserMobile(getApplicationContext(), response.result.mobile_number);
-                        Log.d(TAG,response.result.activation_code);
-                        Prefs.setActivationCode(getApplication(),response.result.activation_code);
+                        Log.d(TAG, response.result.activation_code);
+                        Prefs.setActivationCode(getApplication(), response.result.activation_code);
                         DashboardActivity.open(getApplicationContext());
                         finish();
                         showToast(response.getMessage());
@@ -131,6 +127,18 @@ public class RegisterActivity extends BaseActivity {
                         showToast(response.result.message);
                     }
                 }
+            }
+        });
+
+        spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                billingDate = String.valueOf(spDate.getSelectedItem());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -186,23 +194,17 @@ public class RegisterActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.btnRegister, R.id.imgDate, R.id.imgMobilereward, R.id.imgBack, R.id.etDate, R.id.txtTerms})
+    @OnClick({R.id.btnRegister, R.id.imgMobilereward, R.id.imgBack, R.id.txtTerms})
     public void clickListener(View view) {
         switch (view.getId()) {
             case R.id.btnRegister:
                 register();
-                break;
-            case R.id.imgDate:
-                billingDate();
                 break;
             case R.id.imgMobilereward:
                 unableReward();
                 break;
             case R.id.imgBack:
                 onBackPressed();
-                break;
-            case R.id.etDate:
-                hideKeyboard();
                 break;
             case R.id.txtTerms:
                 TermsAndConditionActivity.open(this);
@@ -211,18 +213,18 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void register() {
+        Log.d(TAG, billingDate);
 
         mobile = etmobile.getText().toString();
         validationCode = etValidationCode.getText().toString();
         password = etPassword.getText().toString();
         spCountrycode.registerPhoneNumberTextView(etmobile);
         prefix = spCountrycode.getSelectedCountryCodeWithPlus();
-        Log.d("number",prefix);
+        Log.d("number", prefix);
 
-        if (!spCountrycode.isValid()){
+        if (!spCountrycode.isValid()) {
             showToast("Mobile number not valid");
-        }
-        else if (Validation.isValidMobilenetwork(operatorId)) {
+        } else if (Validation.isValidMobilenetwork(operatorId)) {
             showToast("Select Mobile network");
         } else if (!ischeckPaymentopt()) {
             showToast("Select Mobile sim");
@@ -254,47 +256,6 @@ public class RegisterActivity extends BaseActivity {
         } else {
             checkReward = true;
             imgMobilereward.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.reward_select));
-        }
-    }
-
-    //Billing Date
-    public void billingDate() {
-        try {
-            int mYear, mMonth, mDay = 0;
-            final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
-            long minDate = c.getTime().getTime();
-            final DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            DateFormatSymbols symbols = new DateFormatSymbols(Locale.CANADA);
-                            String[] monthNames = symbols.getMonths();
-                            String month = monthNames[monthOfYear];
-                            startDay = dayOfMonth;
-                            startMonth = monthOfYear +1;
-                            startYear = year;
-                            String date = startMonth + "-" + startDay + "-" + startYear;
-                            billingDate = DateFormat.Date(date);
-                            etDate.setText(billingDate);
-                            Log.d(TAG, billingDate);
-                            // TODO Auto-generated method stub
-//                            c.set(Calendar.YEAR, year);
-//                            c.set(Calendar.MONTH, monthOfYear);
-//                            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                            billingDate =  view.getYear()+"-"+(view.getMonth()+1)+"-"+view.getDayOfMonth();
-//                            etDate.setText(billingDate);
-
-                        }
-                    }, mYear, mMonth, mDay);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(2017, 0, 1);
-            datePickerDialog.getDatePicker().setMinDate(minDate);
-            datePickerDialog.show();
-        } catch (Exception e) {
-            //e.printStackTrace();
         }
     }
 

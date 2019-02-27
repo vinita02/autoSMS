@@ -53,10 +53,8 @@ public class MyProfileActivity extends BaseActivity {
     Spinner spinner;
     @BindView(R.id.imgBack)
     ImageView imgBack;
-    @BindView(R.id.imgDate)
-    ImageView imgDate;
-    @BindView(R.id.etDate)
-    EditText etDate;
+    @BindView(R.id.spDate)
+    Spinner spDate;
     @BindView(R.id.btnUpdate)
     Button btnUpdate;
     @BindView(R.id.btnCancel)
@@ -201,9 +199,20 @@ public class MyProfileActivity extends BaseActivity {
                 paymentOpt = "payg";
             }
             //set billing date
-            etDate.setText(response.result.profile.billing_date);
-            billingDate = etDate.getText().toString();
 
+            int dateId = Integer.parseInt(response.result.profile.billing_date);
+            spDate.setSelection(dateId - 1);
+            spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    billingDate = String.valueOf(spDate.getSelectedItem());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
             //set activation code
             txtValidationCode.setText(response.result.activation_codes.code);
             validationCode = txtValidationCode.getText().toString();
@@ -211,7 +220,7 @@ public class MyProfileActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btnUpdate, R.id.radioYes, R.id.radioNo, R.id.radioMonthly, R.id.radioPayg, R.id.btnCancel, R.id.imgDate, R.id.imgBack, R.id.etDate})
+    @OnClick({R.id.btnUpdate, R.id.radioYes, R.id.radioNo, R.id.radioMonthly, R.id.radioPayg, R.id.btnCancel,R.id.imgBack})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -233,14 +242,8 @@ public class MyProfileActivity extends BaseActivity {
             case R.id.btnCancel:
                 finish();
                 break;
-            case R.id.imgDate:
-                billingDate();
-                break;
             case R.id.imgBack:
                 onBackPressed();
-                break;
-            case R.id.etDate:
-                hideKeyboard();
                 break;
         }
     }
@@ -263,47 +266,6 @@ public class MyProfileActivity extends BaseActivity {
             updateRequest.setSms_plan(smsPlan);
             updateRequest.setActivation_code(validationCode);
             viewModel.updateProfile(updateRequest);
-        }
-    }
-
-    //Billing Date
-    public void billingDate() {
-        try {
-            int mYear, mMonth, mDay = 0;
-            final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
-            long minDate = c.getTime().getTime();
-            final DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            DateFormatSymbols symbols = new DateFormatSymbols(Locale.CANADA);
-                            String[] monthNames = symbols.getMonths();
-                            String month = monthNames[monthOfYear];
-                            startDay = dayOfMonth;
-                            startMonth = monthOfYear +1;
-                            startYear = year;
-                            String date = startMonth + "-" + startDay + "-" + startYear;
-                            billingDate = DateFormat.Date(date);
-                            etDate.setText(billingDate);
-                            Log.d(TAG, billingDate);
-                            // TODO Auto-generated method stub
-//                            c.set(Calendar.YEAR, year);
-//                            c.set(Calendar.MONTH, monthOfYear);
-//                            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                            billingDate =  view.getYear()+"-"+(view.getMonth()+1)+"-"+view.getDayOfMonth();
-//                            etDate.setText(billingDate);
-
-                        }
-                    }, mYear, mMonth, mDay);
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(2017, 0, 1);
-            datePickerDialog.getDatePicker().setMinDate(minDate);
-            datePickerDialog.show();
-        } catch (Exception e) {
-            //e.printStackTrace();
         }
     }
 }
