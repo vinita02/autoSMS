@@ -99,11 +99,12 @@ public class DashboardActivity extends BaseActivity {
 
                 if (data != null) {
                     if (data.getResponse_code().equals("200")) {
-//                        response = data;
-//                        checkSMSPermission(data);
+//                          response = data;
+                          checkSMSPermission(data);
+
                         if (data.result.size() != 0) {
-                          //  response = data;
-                           // checkSMSPermission(data);
+                            response = data;
+                          //  checkSMSPermission(data);
                             Log.d("TAGA", "service call");
                         } else {
                             Log.d("TAGA", "service not call");
@@ -116,16 +117,16 @@ public class DashboardActivity extends BaseActivity {
 
     private void sendMessages(SendMessagesResponse response) {
 
-        Contacts.User user1 = new Contacts.User();
-        user1.setId(1);
-        user1.setMobile("7219349527");
-        user1.setMessages("hiii veena whatsup...");
-        num.add(user1);
-        Contacts.User user2 = new Contacts.User();
-        user2.setId(12);
-        user2.setMobile("8411954855");
-        user2.setMessages("hiii snehal whatsup...");
-        num.add(user2);
+//        Contacts.User user1 = new Contacts.User();
+//        user1.setId(1);
+//        user1.setMobile("981960922");
+//        user1.setMessages("hiii trupti whatsup...");
+//        num.add(user1);
+//        Contacts.User user2 = new Contacts.User();
+//        user2.setId(12);
+//        user2.setMobile("8291450019");
+//        user2.setMessages("hiii kuldeep whatsup...");
+//        num.add(user2);
         Gson gson = new Gson();
         String json = gson.toJson(num);
         String respo = gson.toJson(response);

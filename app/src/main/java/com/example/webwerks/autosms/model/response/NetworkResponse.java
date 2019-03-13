@@ -21,7 +21,7 @@ public class NetworkResponse extends BaseResponse{
             this.operators = operators;
         }
 
-        @SerializedName("operators")
+        @SerializedName("networks")
         public ArrayList<Operators> operators;
     }
 
@@ -31,7 +31,7 @@ public class NetworkResponse extends BaseResponse{
         @SerializedName("id")
         public String id;
 
-        @SerializedName("operator_name")
+        @SerializedName("name")
         public String operator_name;
 
         public String getId() {

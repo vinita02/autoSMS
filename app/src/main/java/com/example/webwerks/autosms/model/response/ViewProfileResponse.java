@@ -27,7 +27,7 @@ public class ViewProfileResponse extends BaseResponse{
         public ActivationCode activation_codes;
 
 
-        @SerializedName("operators")
+        @SerializedName("network")
         public ArrayList<Operators> operators;
 
         public ArrayList<Operators> getOperators() {
@@ -71,7 +71,7 @@ public class ViewProfileResponse extends BaseResponse{
         @SerializedName("activation_code_id")
         public String activation_code_id;
 
-        @SerializedName("operator_id")
+        @SerializedName("network_id")
         public String operator_id;
 
         @SerializedName("remember_token")
@@ -118,7 +118,7 @@ public class ViewProfileResponse extends BaseResponse{
         @SerializedName("id")
         public String id;
 
-        @SerializedName("operator_name")
+        @SerializedName("name")
         public String operator_name;
 
         public String getId() {

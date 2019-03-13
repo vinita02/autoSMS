@@ -15,9 +15,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public String DEVICE_ID;
     public int startDay, startMonth, startYear;
 
-
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void setFullscreen() {
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }

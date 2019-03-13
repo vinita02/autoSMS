@@ -32,7 +32,7 @@ public interface ApiServices {
            @Field("password") String password);
 
 
-   @GET("user/netwok_operator")
+   @GET("user/network")
    Single<NetworkResponse> networkOperator();
 
 
@@ -41,7 +41,7 @@ public interface ApiServices {
    Single<RegisterResponse> userRegister(
            @Field("mobile_number") String mobile_number,
            @Field("activation_code") String activation_code,
-           @Field("operator_id") int operator,
+           @Field("network_id") int operator,
            @Field("sim_type") String sim_type,
            @Field("sms_plan") String sms_plan,
            @Field("billing_date") String billing_date);
@@ -57,7 +57,7 @@ public interface ApiServices {
            @Field("token") String token,
            @Field("mobile_number") String mobile_number,
            @Field("activation_code") String activation_code,
-           @Field("operator_id") int operator,
+           @Field("network_id") int operator,
            @Field("sim_type") String sim_type,
            @Field("sms_plan") String sms_plan,
            @Field("billing_date") String billing_date);
