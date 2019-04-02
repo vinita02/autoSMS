@@ -45,8 +45,8 @@ public class ShareScreenActivity extends BaseActivity {
     Context context;
     String mobile;
 
-    public static void open(DashboardActivity activity) {
-        activity.startActivity(new Intent(activity, ShareScreenActivity.class));
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, ShareScreenActivity.class));
     }
 
     @Override

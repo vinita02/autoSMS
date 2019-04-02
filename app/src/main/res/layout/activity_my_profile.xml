@@ -46,8 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:padding="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <LinearLayout
                 android:id="@+id/llMobile"
@@ -61,10 +61,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/registered_mobile_number"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
                 <TextView
@@ -73,10 +73,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
+                    android:fontFamily="@font/arial_rounded"
                     android:text=""
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -96,10 +96,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="2"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/network"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -135,10 +135,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="2"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/sim_plan"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -159,23 +159,23 @@
                         android:id="@+id/radioMonthly"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/pay_monthly"
                         android:fontFamily="@font/arial_rounded"
+                        android:text="@string/pay_monthly"
                         android:textSize="18sp" />
 
                     <RadioButton
                         android:id="@+id/radioPayg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/payg_sim"
-
                         android:fontFamily="@font/arial_rounded"
+
+                        android:text="@string/payg_sim"
                         android:textSize="18sp" />
                 </RadioGroup>
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/llBillingDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -221,7 +221,7 @@
                     android:layout_marginEnd="60dp"
                     android:layout_below="@+id/spDate"
                     android:background="@color/material_grey_500" />
-            </RelativeLayout>
+            </RelativeLayout>-->
 
             <LinearLayout
                 android:id="@+id/llPlans"
@@ -238,10 +238,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="2"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/sms_plan_sentance"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -249,7 +249,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="40dp"
                 android:orientation="horizontal">
 
@@ -263,8 +263,8 @@
                         android:id="@+id/radioYes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/yes"
                         android:fontFamily="@font/arial_rounded"
+                        android:text="@string/yes"
                         android:textSize="18sp" />
 
                     <RadioButton
@@ -272,8 +272,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="30dp"
-                        android:text="@string/no"
                         android:fontFamily="@font/arial_rounded"
+                        android:text="@string/no"
                         android:textSize="18sp" />
                 </RadioGroup>
 
@@ -292,10 +292,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/activation_registered_with"
                     android:textColor="@color/material_light_blue_500"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
                 <TextView
@@ -304,10 +304,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="82914AKQW50019"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -317,9 +317,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:layout_marginStart="15dp"
                 android:weightSum="2">
 
 
@@ -328,12 +328,11 @@
                     android:layout_width="110dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/button_cancel"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/cancel"
                     android:textAllCaps="false"
                     android:textColor="@color/buttonColor"
-                    android:textSize="24sp"
-                    android:fontFamily="@font/arial_rounded"
-                    android:visibility="visible" />
+                    android:textSize="24sp" />
 
                 <Button
                     android:id="@+id/btnUpdate"
@@ -341,11 +340,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="20dp"
                     android:background="@drawable/button_register"
+                    android:fontFamily="@font/arial_rounded"
                     android:text="@string/update"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="24sp"
-                    android:fontFamily="@font/arial_rounded"
                     android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>

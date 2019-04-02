@@ -14,11 +14,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.activity.DashboardActivity;
 import com.example.webwerks.autosms.model.Contacts;
@@ -28,18 +26,8 @@ import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.CompletableSource;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-
 import static com.example.webwerks.autosms.application.App.CHANNEL_ID;
 
 
@@ -83,57 +71,46 @@ public class ForgroundService extends Service {
 
         String title = intent.getStringExtra("json_data");
         String respo_data = intent.getStringExtra("respo_data");
-//        Contacts response = gson.fromJson(title, Contacts.class);
-//        Observable.fromIterable(response.users).concatMapCompletable(new Function<Contacts.User, CompletableSource>() {
-//            @Override
-//            public CompletableSource apply(final Contacts.User result) throws Exception {
-//                return Observable.create(new ObservableOnSubscribe<SendMessagesResponse.Result>() {
-//                    @Override
-//                    public void subscribe(final ObservableEmitter<SendMessagesResponse.Result> emitter) throws Exception {
-//                        demo(result.getMobile(),result.getMobile(),result.getId());
-//                        Observable.timer(5,TimeUnit.SECONDS).doOnNext(new Consumer<Long>() {
-//                            @Override
-//                            public void accept(Long aLong) throws Exception {
-//                                emitter.onComplete();
-//                            }
-//                        }).subscribe();
-//                    }
-//                }).ignoreElements();
-//            }
-//        });
 
+        //-------------------------   Demo Messages ------------------ //
+
+       /* Contacts resp = gson.fromJson(title, Contacts.class);
+
+        if (resp != null) {
+
+            for (int i = 0; i < resp.size(); i++) {
+
+                final String message = resp.get(i).getMessages();
+                final String phone = resp.get(i).getMobile();
+                final int id = resp.get(i).getId();
+
+                *//*Log.d("MySimpleService", "message " + message);
+                Log.d("MySimpleService", "phone " + phone);
+                Log.d("MySimpleService", "id" + id);*//*
+
+                String check_id = String.valueOf(id);
+                String check = Prefs.getDeliverdIds(getApplication());
+                if (check.contains(check_id)) {
+                    Log.d("MySimpleService", "Match");
+                } else {
+                    Log.d("MySimpleService", "NotMatch");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("button_cancel", "run: ");
+                            button_cancel(phone, message, id);
+                        }
+                    }, 20000);
+                }
+            }
+        }*/
+
+        // ------------------------- Live Messages ------------------ //
 
         SendMessagesResponse response = gson.fromJson(respo_data, SendMessagesResponse.class);
+
         Log.d("SendMessagesResponse ", "Task: " + response.getMessage());
         Log.d("TAG", "Task: " + response.getResponse_code());
-
-//        Observable.fromIterable(response.result)
-//                .concatMapCompletable(new Function<SendMessagesResponse.Result, CompletableSource>() {
-//
-//                    @Override
-//                    public CompletableSource apply(final SendMessagesResponse.Result result) throws Exception {
-//                        return Observable.create(new ObservableOnSubscribe<SendMessagesResponse.Result>() {
-//
-//                            @Override
-//                            public void subscribe(final ObservableEmitter<SendMessagesResponse.Result> emitter) throws Exception {
-//                                Log.d("TAG", "subscribe: ");
-//                                demo(result.mobile_number,result.message_content, Integer.parseInt(result.message_id));
-//                                Observable.timer(5,TimeUnit.SECONDS).doOnNext(new Consumer<Long>() {
-//
-//                                   @Override
-//                                   public void accept(Long aLong) throws Exception {
-//                                       emitter.onComplete();
-//                                       Log.d("TAG", "accept: ");
-//
-//                                   }
-//                               }).subscribe();
-//                            }
-//                        }).ignoreElements();
-//                    }
-//                });
-
-
-//-------------------------------------------
 
         if (response != null) {
 
@@ -156,19 +133,20 @@ public class ForgroundService extends Service {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("demo", "run: ");
-//                            demo(phone, message, id);
+                            Log.d("button_cancel", "run: ");
+                            demo(phone, message, id);
                         }
                     }, 20000);
-
-
                 }
             }
         }
     }
 
     private void demo(String number, final String message, int id) {
-        Log.d("Call", "Delay 20sec");
+        Log.d("MySimpleService", number);
+        Log.d("MySimpleService", message);
+        Log.d("MySimpleService", String.valueOf(id));
+
         ID = id;
         Intent deliveredIntent = new Intent(DELIVERED + ID);
         deliveredIntent.putExtra("messageID", ID);
@@ -193,20 +171,20 @@ public class ForgroundService extends Service {
                         Log.d("MySimpleService", "SMS SENT");
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(getBaseContext(), "Generic failure",
-                                Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Generic failure",
+                        //  Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_NO_SERVICE:
                         Toast.makeText(getBaseContext(), "No service",
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(getBaseContext(), "Null PDU",
-                                Toast.LENGTH_SHORT).show();
+                        /*Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();*/
                         break;
                     case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(getBaseContext(), "Radio off",
-                                Toast.LENGTH_SHORT).show();
+                        /*Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();*/
                         break;
                 }
             }

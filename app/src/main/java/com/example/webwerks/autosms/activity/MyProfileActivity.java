@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.adapter.OperatorsAdapter;
+import com.example.webwerks.autosms.adapter.ProfileNetworkAdapter;
+import com.example.webwerks.autosms.adapter.RegisterNetworkAdapter;
 import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
 import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
@@ -45,6 +47,7 @@ import butterknife.Unbinder;
 public class MyProfileActivity extends BaseActivity {
 
     private static String TAG = "MyProfileActivity";
+    Context context;
     @BindView(R.id.txtMobileNumber)
     TextView txtMobileNumber;
     @BindView(R.id.txtValidationCode)
@@ -53,8 +56,8 @@ public class MyProfileActivity extends BaseActivity {
     Spinner spinner;
     @BindView(R.id.imgBack)
     ImageView imgBack;
-    @BindView(R.id.spDate)
-    Spinner spDate;
+    /* @BindView(R.id.spDate)
+     Spinner spDate;*/
     @BindView(R.id.btnUpdate)
     Button btnUpdate;
     @BindView(R.id.btnCancel)
@@ -75,7 +78,8 @@ public class MyProfileActivity extends BaseActivity {
     String token, mobile;
     UpdateProfileRequest updateRequest = new UpdateProfileRequest();
     ViewProfileRequest viewRequest = new ViewProfileRequest();
-    String smsPlan, paymentOpt, validationCode, billingDate, operatorId;
+    String smsPlan, paymentOpt, validationCode, billingDate;
+    int operatorId;
     ArrayList<ViewProfileResponse.Operators> networkList = new ArrayList<>();
 
     public static void open(Context context) {
@@ -89,7 +93,8 @@ public class MyProfileActivity extends BaseActivity {
 
     @Override
     protected void initViews() {
-        progress = new Progress(this,root);
+        context = this;
+        progress = new Progress(this, root);
         progress.showProgresBar();
         token = Prefs.getToken(getApplicationContext());
         //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTk2NDAzNSwiZXhwIjoxNTUxMTczNjM1LCJuYmYiOjE1NDk5NjQwMzUsImp0aSI6IjI1RTU0eEJaN0dITVJJQnMiLCJzdWIiOjE5LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.I4hH0ELaaCruSmbUyDtW1nx6LCGy9HCXKcRYwX7OaQE";
@@ -138,8 +143,8 @@ public class MyProfileActivity extends BaseActivity {
                         if (response.error != null) {
                             Log.d(TAG, response.error);
                         } else {
-                            Log.d(TAG, response.result.getOperators().get(0).operator_name);
-                            Log.d(TAG, response.getMessage());
+                            //Log.d(TAG, response.result.getOperators().get(0).operator_name);
+                            //Log.d(TAG, response.getMessage());
                             setValues(response);
                             //progress.hideProgressBar();
                         }
@@ -154,7 +159,6 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     public void setValues(ViewProfileResponse response) {
-
         //set mobile number
         txtMobileNumber.setText(response.result.profile.mobile_number);
         mobile = txtMobileNumber.getText().toString();
@@ -162,16 +166,22 @@ public class MyProfileActivity extends BaseActivity {
         // set spinner
         if (response.result.operators.size() != 0) {
             networkList.addAll(response.result.getOperators());
-            Log.d("TAGA", networkList.toString());
-            final OperatorsAdapter adapter = new OperatorsAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
+
+            /*final OperatorsAdapter adapter = new OperatorsAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
+            spinner.setAdapter(adapter);*/
+            final ProfileNetworkAdapter adapter = new ProfileNetworkAdapter(context,networkList);
             spinner.setAdapter(adapter);
-            int id = Integer.parseInt(response.result.profile.operator_id);
-            spinner.setSelection(id - 1);
+            //int id = Integer.parseInt(response.result.profile.operator_id);
+            int id = response.result.profile.operator_id;
+            int pos = getSelectedtOperatorPosition(id,networkList);
+            Log.d("TAGAA", String.valueOf(pos));
+            spinner.setSelection(pos);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     operatorId = adapter.getItem(i).id;
-                    Log.d("TAGA", operatorId);
+                    /*Log.d("TAGA", String.valueOf(operatorId));
+                    Log.d("TAGA", adapter.getItem(i).getOperator_name());*/
                 }
 
                 @Override
@@ -200,7 +210,7 @@ public class MyProfileActivity extends BaseActivity {
             }
             //set billing date
 
-            int dateId = Integer.parseInt(response.result.profile.billing_date);
+            /*int dateId = Integer.parseInt(response.result.profile.billing_date);
             spDate.setSelection(dateId - 1);
             spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -212,15 +222,28 @@ public class MyProfileActivity extends BaseActivity {
                 public void onNothingSelected(AdapterView<?> adapterView) {
 
                 }
-            });
+            });*/
             //set activation code
             txtValidationCode.setText(response.result.activation_codes.code);
             validationCode = txtValidationCode.getText().toString();
         }
     }
 
+    private int getSelectedtOperatorPosition(int id, ArrayList<ViewProfileResponse.Operators> networkList) {
+          int pos = -1;
+          for (int i=0;i<networkList.size();i++){
+              ViewProfileResponse.Operators operators = networkList.get(i);
+              if (operators.id==id){
+                  pos = i;
+                  break;
+              }
+          }
 
-    @OnClick({R.id.btnUpdate, R.id.radioYes, R.id.radioNo, R.id.radioMonthly, R.id.radioPayg, R.id.btnCancel,R.id.imgBack})
+          return pos;
+    }
+
+
+    @OnClick({R.id.btnUpdate, R.id.radioYes, R.id.radioNo, R.id.radioMonthly, R.id.radioPayg, R.id.btnCancel, R.id.imgBack})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -250,9 +273,9 @@ public class MyProfileActivity extends BaseActivity {
 
     private void update() {
         Log.d("TAGA", mobile);
-        Log.d("TAGA", operatorId);
+        Log.d("TAGA", String.valueOf(operatorId));
         Log.d("TAGA", paymentOpt);
-        Log.d("TAGA", billingDate);
+        // Log.d("TAGA",  );
         Log.d("TAGA", smsPlan);
         Log.d("TAGA", validationCode);
         if (!CheckNetwork.isConnected(this)) {
@@ -260,9 +283,10 @@ public class MyProfileActivity extends BaseActivity {
         } else {
             updateRequest.setToken(token);
             updateRequest.setMobile_number(mobile);
-            updateRequest.setOperator(Integer.parseInt(operatorId));
+            //updateRequest.setOperator(Integer.parseInt(operatorId));
+            updateRequest.setOperator(operatorId);
             updateRequest.setSim_type(paymentOpt);
-            updateRequest.setBilling_date(billingDate);
+            updateRequest.setBilling_date("0");
             updateRequest.setSms_plan(smsPlan);
             updateRequest.setActivation_code(validationCode);
             viewModel.updateProfile(updateRequest);

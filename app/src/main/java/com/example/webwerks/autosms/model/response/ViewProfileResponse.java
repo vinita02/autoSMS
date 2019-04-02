@@ -72,7 +72,7 @@ public class ViewProfileResponse extends BaseResponse{
         public String activation_code_id;
 
         @SerializedName("network_id")
-        public String operator_id;
+        public int operator_id;
 
         @SerializedName("remember_token")
         public String remember_token;
@@ -113,19 +113,19 @@ public class ViewProfileResponse extends BaseResponse{
         public String code;
     }
 
-    public static class Operators{
+    public  class Operators{
 
         @SerializedName("id")
-        public String id;
+        public int id;
 
         @SerializedName("name")
         public String operator_name;
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(int id) {
             this.id = id;
         }
 

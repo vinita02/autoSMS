@@ -10,9 +10,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.model.Contacts;
 import com.example.webwerks.autosms.model.request.SendMessagesRequest;
@@ -30,13 +27,9 @@ import com.example.webwerks.autosms.utils.CheckNetwork;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.viewmodel.MessagesViewModel;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 public class DashboardActivity extends BaseActivity {
 
@@ -52,6 +45,7 @@ public class DashboardActivity extends BaseActivity {
     SendMessagesResponse response = new SendMessagesResponse();
     private static final int PERMISSION_REQUEST = 100;
     String mobile;
+    Context context;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, DashboardActivity.class));
@@ -64,6 +58,7 @@ public class DashboardActivity extends BaseActivity {
 
     @Override
     protected void initViews() {
+        context = this;
         // ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
         Prefs.setLaunchActivity(DashboardActivity.this, "dashboardActivity");
         mobile = Prefs.getUserMobile(this);
@@ -86,6 +81,11 @@ public class DashboardActivity extends BaseActivity {
         }, 3000);
     }
 
+   /* public void forceCrash(View view) {
+        throw new RuntimeException("This is a crash");
+    }*/
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -99,12 +99,11 @@ public class DashboardActivity extends BaseActivity {
 
                 if (data != null) {
                     if (data.getResponse_code().equals("200")) {
-//                          response = data;
-                          checkSMSPermission(data);
+                       // checkSMSPermission(data);
 
                         if (data.result.size() != 0) {
                             response = data;
-                          //  checkSMSPermission(data);
+                            checkSMSPermission(data);
                             Log.d("TAGA", "service call");
                         } else {
                             Log.d("TAGA", "service not call");
@@ -117,16 +116,16 @@ public class DashboardActivity extends BaseActivity {
 
     private void sendMessages(SendMessagesResponse response) {
 
-//        Contacts.User user1 = new Contacts.User();
-//        user1.setId(1);
-//        user1.setMobile("981960922");
-//        user1.setMessages("hiii trupti whatsup...");
-//        num.add(user1);
-//        Contacts.User user2 = new Contacts.User();
-//        user2.setId(12);
-//        user2.setMobile("8291450019");
-//        user2.setMessages("hiii kuldeep whatsup...");
-//        num.add(user2);
+        Contacts.User user1 = new Contacts.User();
+        user1.setId(1);
+        user1.setMobile("8805429015");
+        user1.setMessages("hiii abhijeet whatsup...");
+        num.add(user1);
+        Contacts.User user2 = new Contacts.User();
+       /* user2.setId(12);
+        user2.setMobile("8291450019");
+        user2.setMessages("hiii kuldeep whatsup...");
+        num.add(user2);*/
         Gson gson = new Gson();
         String json = gson.toJson(num);
         String respo = gson.toJson(response);
@@ -135,20 +134,19 @@ public class DashboardActivity extends BaseActivity {
         serviceIntent.putExtra("respo_data", respo);
         serviceIntent.putExtra("inputExtra", "Background task perform...");
         ContextCompat.startForegroundService(this, serviceIntent);
-
     }
 
     @OnClick({R.id.btnShareNow, R.id.imgBack, R.id.imgUser})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnShareNow:
-                ShareScreenActivity.open(this);
+                ShareScreenActivity.open(context);
                 break;
             case R.id.imgBack:
                 onBackPressed();
                 break;
             case R.id.imgUser:
-                MyProfileActivity.open(this);
+                MyProfileActivity.open(context);
                 break;
         }
     }
@@ -161,11 +159,11 @@ public class DashboardActivity extends BaseActivity {
                             Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQUEST);
+                            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST);
                         }
                     }).show();
                 } else {
-                    requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQUEST);
+                    requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST);
                 }
             } else {
                 sendMessages(response);

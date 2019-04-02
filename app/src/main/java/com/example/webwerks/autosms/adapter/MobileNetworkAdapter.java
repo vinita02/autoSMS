@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 
 import java.util.ArrayList;
@@ -23,22 +24,26 @@ public class MobileNetworkAdapter extends ArrayAdapter<NetworkResponse.Operators
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
+        TextView textView = view.findViewById(R.id.tvNetwork);
 
         String name = operators.get(position).getOperator_name();
+        textView.setText(name);
         Log.d("names",name);
-        if (view instanceof TextView) {
+       /* if (view instanceof TextView) {
             ((TextView) view).setText(name);
-        }
+        }*/
         return view;
     }
 
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         View row = super.getView(position, convertView, parent);
+        TextView textView = row.findViewById(R.id.tvNetwork);
         String name = operators.get(position).getOperator_name();
-        Log.d("TAGA",name);
+        textView.setText(name);
+       /* Log.d("TAGA",name);
         if (row instanceof TextView) {
             ((TextView) row).setText(name);
-        }
+        }*/
         return (row);
     }
 }

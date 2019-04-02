@@ -1,8 +1,8 @@
 package com.example.webwerks.autosms.activity;
 
-import android.app.DatePickerDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -19,25 +18,20 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.webwerks.autosms.R;
-import com.example.webwerks.autosms.adapter.MobileNetworkAdapter;
+import com.example.webwerks.autosms.adapter.RegisterNetworkAdapter;
 import com.example.webwerks.autosms.model.request.RegisterRequest;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
 import com.example.webwerks.autosms.utils.CheckNetwork;
-import com.example.webwerks.autosms.utils.DateFormat;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.utils.Progress;
 import com.example.webwerks.autosms.utils.Validation;
 import com.example.webwerks.autosms.viewmodel.RegisterViewModel;
 import com.rilixtech.CountryCodePicker;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,8 +50,8 @@ public class RegisterActivity extends BaseActivity {
     ImageView imgMobilereward;
     @BindView(R.id.imgBack)
     ImageView imgBack;
-    @BindView(R.id.spDate)
-    Spinner spDate;
+    /* @BindView(R.id.spDate)
+     Spinner spDate;*/
     @BindView(R.id.spinner)
     Spinner spinner;
     @BindView(R.id.rgSmsplan)
@@ -79,6 +73,7 @@ public class RegisterActivity extends BaseActivity {
     ArrayList<NetworkResponse.Operators> networkList = new ArrayList<>();
     boolean checkReward = true;
     private Progress progress;
+    Context context;
 
 
     public static void open(LoginActivity activity) {
@@ -92,6 +87,8 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected void initViews() {
+        context = this;
+
         Prefs.setLaunchActivity(RegisterActivity.this, "registerActivity");
         progress = new Progress(this, root);
         progress.showProgresBar();
@@ -115,22 +112,22 @@ public class RegisterActivity extends BaseActivity {
                 // Log.d(TAG, "onChanged"+registerResponse.result.token);
                 if (response != null) {
                     if (response.getResponse_code().equals("200")) {
-                        Prefs.setToken(getApplicationContext(), response.result.token);
-                        Prefs.setUserMobile(getApplicationContext(), response.result.mobile_number);
+                        Prefs.setToken(context, response.result.token);
+                        Prefs.setUserMobile(context, response.result.mobile_number);
                         Log.d(TAG, response.result.activation_code);
-                        Prefs.setActivationCode(getApplication(), response.result.activation_code);
-                        DashboardActivity.open(getApplicationContext());
+                        Prefs.setActivationCode(context, response.result.activation_code);
+                        DashboardActivity.open(context);
                         finish();
                         showToast(response.getMessage());
                     } else {
                         Log.d(TAG, "error");
-                        showToast(response.result.message);
+                        showToast(response.getMessage());
                     }
                 }
             }
         });
 
-        spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       /* spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 billingDate = String.valueOf(spDate.getSelectedItem());
@@ -140,7 +137,7 @@ public class RegisterActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
+        });*/
 
     }
 
@@ -177,14 +174,18 @@ public class RegisterActivity extends BaseActivity {
         networkList.addAll(response.result.getOperators());
         Log.d("TAGA", networkList.toString());
 
-        final MobileNetworkAdapter adapter = new MobileNetworkAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
+        /*final MobileNetworkAdapter adapter = new MobileNetworkAdapter(getApplicationContext(), R.layout.spinner_network, networkList);
+        spinner.setAdapter(adapter);*/
+        final RegisterNetworkAdapter adapter = new RegisterNetworkAdapter(context,networkList);
         spinner.setAdapter(adapter);
+        //simple_spinner_item
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                operatorId = adapter.getItem(i).id;
+                operatorId = adapter.getItem(i).getId();
                 Log.d("TAGA", operatorId);
+                Log.d("TAGA", adapter.getItem(i).getOperator_name());
             }
 
             @Override
@@ -213,13 +214,14 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void register() {
-        Log.d(TAG, billingDate);
+        //Log.d(TAG, billingDate);
 
         mobile = etmobile.getText().toString();
         validationCode = etValidationCode.getText().toString();
         password = etPassword.getText().toString();
         spCountrycode.registerPhoneNumberTextView(etmobile);
-        prefix = spCountrycode.getSelectedCountryCodeWithPlus();
+        prefix = spCountrycode.getSelectedCountryCode();
+       // prefix = spCountrycode.getSelectedCountryCodeWithPlus();
         Log.d("number", prefix);
 
         if (!spCountrycode.isValid()) {
@@ -236,13 +238,14 @@ public class RegisterActivity extends BaseActivity {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
             } else {
-
+                Log.d("TAGAGA",mobile);
                 request.setMobile_number(prefix + mobile);
+               // request.setMobile_number(mobile);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);
                 request.setSms_plan(smsPlan);
-                request.setBilling_date(billingDate);
+                //request.setBilling_date("0");
                 viewModel.register(request);
             }
         }
