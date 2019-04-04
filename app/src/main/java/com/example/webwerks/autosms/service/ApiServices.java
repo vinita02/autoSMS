@@ -59,8 +59,7 @@ public interface ApiServices {
            @Field("activation_code") String activation_code,
            @Field("network_id") int operator,
            @Field("sim_type") String sim_type,
-           @Field("sms_plan") String sms_plan,
-           @Field("billing_date") String billing_date);
+           @Field("sms_plan") String sms_plan);
 
    @GET("user/termscontent")
    Single<TermsResponse> getTermsandCondition();

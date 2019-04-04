@@ -72,7 +72,7 @@ public class RestServices {
     public UpdateProfileResponse updateProfile(UpdateProfileRequest request){
 
         Single <UpdateProfileResponse> updateProfileResponse = apiServices.updateProfile(request.getToken(),request.getMobile_number(),request.getActivation_code(),
-                request.getOperator(),request.getSim_type(),request.getSms_plan(),request.getBilling_date());
+                request.getOperator(),request.getSim_type(),request.getSms_plan());
         UpdateProfileResponse response = attachCommonRxProperiesAndExecute(updateProfileResponse,UpdateProfileResponse.class);
         return response;
     }

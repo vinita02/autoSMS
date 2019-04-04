@@ -11,9 +11,8 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".application.App"
@@ -25,32 +24,34 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".activity.SplaceActivity">
+        <activity android:name=".activity.SplaceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity"
-            android:windowSoftInputMode="stateAlwaysHidden">
-        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity
             android:name=".activity.RegisterActivity"
-            android:windowSoftInputMode="stateAlwaysHidden">
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
         <activity android:name=".activity.MyProfileActivity" />
-        <activity android:name=".activity.DashboardActivity" >
-        <!--<intent-filter>
+        <activity android:name=".activity.DashboardActivity">
+
+            <!--
+        <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>-->
+        </intent-filter>
+            -->
         </activity>
-
         <activity android:name=".activity.ShareScreenActivity" />
         <activity android:name=".activity.TermsAndConditionActivity" />
 
         <service android:name=".service.ForgroundService" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="53bb65206dd961e73f5f6682144c3d65efbf3fc2" />

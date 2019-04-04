@@ -119,13 +119,14 @@ public class MyProfileActivity extends BaseActivity {
             @Override
             public void onChanged(@Nullable UpdateProfileResponse response) {
                 if (response != null) {
+                    //progress.hideProgressBar();
                     if (response.getResponse_code().equals("200")) {
-                        Log.d(TAG, response.result.message);
-                        showToast(response.result.message);
+                        Log.d(TAG, response.getMessage());
+                        showToast(response.getMessage());
                         finish();
                     } else {
-                        showToast(response.result.message);
-                        Log.d(TAG, response.result.message);
+                        showToast(response.getMessage());
+                        Log.d(TAG, response.getMessage());
                     }
                 }
             }
@@ -137,7 +138,7 @@ public class MyProfileActivity extends BaseActivity {
             @Override
             public void onChanged(@Nullable ViewProfileResponse response) {
                 if (response != null) {
-                    progress.hideProgressBar();
+                    //progress.hideProgressBar();
                     if (response.getResponse_code().equals("200")) {
 
                         if (response.error != null) {
@@ -227,6 +228,7 @@ public class MyProfileActivity extends BaseActivity {
             txtValidationCode.setText(response.result.activation_codes.code);
             validationCode = txtValidationCode.getText().toString();
         }
+        progress.hideProgressBar();
     }
 
     private int getSelectedtOperatorPosition(int id, ArrayList<ViewProfileResponse.Operators> networkList) {
@@ -281,12 +283,13 @@ public class MyProfileActivity extends BaseActivity {
         if (!CheckNetwork.isConnected(this)) {
             showToast("Enable Network State");
         } else {
+            //progress.showProgresBar();
             updateRequest.setToken(token);
             updateRequest.setMobile_number(mobile);
             //updateRequest.setOperator(Integer.parseInt(operatorId));
             updateRequest.setOperator(operatorId);
             updateRequest.setSim_type(paymentOpt);
-            updateRequest.setBilling_date("0");
+           // updateRequest.setBilling_date("0");
             updateRequest.setSms_plan(smsPlan);
             updateRequest.setActivation_code(validationCode);
             viewModel.updateProfile(updateRequest);

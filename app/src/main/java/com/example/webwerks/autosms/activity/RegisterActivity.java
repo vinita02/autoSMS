@@ -1,5 +1,6 @@
 package com.example.webwerks.autosms.activity;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -74,6 +76,8 @@ public class RegisterActivity extends BaseActivity {
     boolean checkReward = true;
     private Progress progress;
     Context context;
+   // private ProgressBar pBar;
+  //  ProgressDialog dialog;
 
 
     public static void open(LoginActivity activity) {
@@ -88,9 +92,13 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void initViews() {
         context = this;
-
-        Prefs.setLaunchActivity(RegisterActivity.this, "registerActivity");
+       // pBar = (ProgressBar) findViewById(R.id.pBar);
+       // pBar.setVisibility(View.VISIBLE);
+        //dialog = new ProgressDialog(this);
+       // dialog.setTitle("Loading");
+        //dialog.show();
         progress = new Progress(this, root);
+        Prefs.setLaunchActivity(RegisterActivity.this, "registerActivity");
         progress.showProgresBar();
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         //List of NetworkOperators
@@ -109,8 +117,11 @@ public class RegisterActivity extends BaseActivity {
         viewModel.getRegisterResponse().observe(this, new Observer<RegisterResponse>() {
             @Override
             public void onChanged(@Nullable RegisterResponse response) {
-                // Log.d(TAG, "onChanged"+registerResponse.result.token);
                 if (response != null) {
+                    //progress.hideProgressBar();
+                   // dialog.hide();
+                    Log.d("PROGRESS", "onChanged");
+                   // pBar.setVisibility(View.GONE);
                     if (response.getResponse_code().equals("200")) {
                         Prefs.setToken(context, response.result.token);
                         Prefs.setUserMobile(context, response.result.mobile_number);
@@ -126,37 +137,25 @@ public class RegisterActivity extends BaseActivity {
                 }
             }
         });
-
-       /* spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                billingDate = String.valueOf(spDate.getSelectedItem());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
-
     }
 
 
     private void getNetworkList() {
+        //pBar.setVisibility(View.VISIBLE);
         viewModel.getNetworkList().observe(this, new Observer<NetworkResponse>() {
             @Override
             public void onChanged(@Nullable final NetworkResponse response) {
                 if (response != null) {
-                    progress.hideProgressBar();
-                    if (response.getResponse_code().equals("200")) {
+                    //dialog.hide();
 
+                    if (response.getResponse_code().equals("200")) {
                         final NetworkResponse.Operators operators = new NetworkResponse.Operators();
                         operators.setId("0");
                         operators.setOperator_name("Select Mobile network");
                         networkList.add(operators);
-
                         if (response.result.operators.size() != 0) {
                             setOperators(response);
+
                         } else {
                             Log.d("TAGA", response.getMessage());
                         }
@@ -170,16 +169,13 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void setOperators(NetworkResponse response) {
-
         networkList.addAll(response.result.getOperators());
         Log.d("TAGA", networkList.toString());
-
         /*final MobileNetworkAdapter adapter = new MobileNetworkAdapter(getApplicationContext(), R.layout.spinner_network, networkList);
         spinner.setAdapter(adapter);*/
         final RegisterNetworkAdapter adapter = new RegisterNetworkAdapter(context,networkList);
         spinner.setAdapter(adapter);
         //simple_spinner_item
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -193,6 +189,8 @@ public class RegisterActivity extends BaseActivity {
                 Log.d("TAGA", "nothing");
             }
         });
+        //pBar.setVisibility(View.GONE);
+        progress.hideProgressBar();
     }
 
     @OnClick({R.id.btnRegister, R.id.imgMobilereward, R.id.imgBack, R.id.txtTerms})
@@ -214,15 +212,12 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void register() {
-        //Log.d(TAG, billingDate);
-
-        mobile = etmobile.getText().toString();
-        validationCode = etValidationCode.getText().toString();
-        password = etPassword.getText().toString();
         spCountrycode.registerPhoneNumberTextView(etmobile);
         prefix = spCountrycode.getSelectedCountryCode();
-       // prefix = spCountrycode.getSelectedCountryCodeWithPlus();
-        Log.d("number", prefix);
+        String mobile = getMobileNumber();
+        Log.d("number", mobile);
+        validationCode = etValidationCode.getText().toString();
+        password = etPassword.getText().toString();
 
         if (!spCountrycode.isValid()) {
             showToast("Mobile number not valid");
@@ -238,9 +233,12 @@ public class RegisterActivity extends BaseActivity {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
             } else {
+                //progress.showProgresBar();
+               // dialog.show();
+               // pBar.setVisibility(View.VISIBLE);
                 Log.d("TAGAGA",mobile);
-                request.setMobile_number(prefix + mobile);
-               // request.setMobile_number(mobile);
+               // request.setMobile_number(prefix + mobile);
+                request.setMobile_number(mobile);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);
@@ -249,6 +247,19 @@ public class RegisterActivity extends BaseActivity {
                 viewModel.register(request);
             }
         }
+    }
+
+    private String getMobileNumber() {
+        String mobileNumber;
+        mobile = etmobile.getText().toString();
+        char first_char = mobile.charAt(0);
+        Log.d("TAGA", String.valueOf(first_char));
+        if (first_char=='0'){
+            mobileNumber = prefix + mobile.substring(1);
+        }else {
+            mobileNumber = prefix + mobile;
+        }
+        return mobileNumber;
     }
 
     //Mobile reward
