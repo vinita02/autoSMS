@@ -11,9 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    //private static final String BASE_URL = "http://autosms.php-dev.in/auto-sms-app/public/api/v1/";
-   // private static final String BASE_URL = "http://180.149.240.85/auto-sms-app/public/api/v1/";
-    private static final String BASE_URL = "http://180.149.240.85/auto-sms-app/public/api/v1/";
+    //private static final String BASE_URL = "http://180.149.240.85/auto-sms-app/public/api/v1/";
+    private static final String BASE_URL = "http://134.119.220.143/~mobilerewards/public/api/v1/";
     private Retrofit retrofit;
     private static ApiClient apiClient;
 
@@ -51,9 +50,9 @@ public class ApiClient {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
-        httpClient.connectTimeout(2, TimeUnit.MINUTES);
-        httpClient.readTimeout(2,TimeUnit.MINUTES);
-        httpClient.writeTimeout(2,TimeUnit.MINUTES);
+        httpClient.connectTimeout(3, TimeUnit.MINUTES);
+        httpClient.readTimeout(3,TimeUnit.MINUTES);
+        httpClient.writeTimeout(3,TimeUnit.MINUTES);
         return httpClient.build();
     }
 

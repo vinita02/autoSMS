@@ -11,6 +11,7 @@ import com.example.webwerks.autosms.model.response.BaseResponse;
 import com.example.webwerks.autosms.model.response.LoginResponse;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
+import com.example.webwerks.autosms.model.response.SendMessagesIdResponse;
 import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.model.response.TermsResponse;
 import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
@@ -92,10 +93,10 @@ public class RestServices {
         return response;
     }
 
-    public BaseResponse sendMessagesIdResponse(SendMessagesIdRequest request){
+    public SendMessagesIdResponse sendMessagesIdResponse(SendMessagesIdRequest request){
 
-        Single <BaseResponse> messagesIdResponse = apiServices.sendMessagesId(request);
-        BaseResponse response = attachCommonRxProperiesAndExecute(messagesIdResponse,BaseResponse.class);
+        Single <SendMessagesIdResponse> messagesIdResponse = apiServices.sendMessagesId(request);
+        SendMessagesIdResponse response = attachCommonRxProperiesAndExecute(messagesIdResponse,SendMessagesIdResponse.class);
         return response;
     }
 

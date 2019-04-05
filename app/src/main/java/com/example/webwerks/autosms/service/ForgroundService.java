@@ -1,6 +1,6 @@
 package com.example.webwerks.autosms.service;
 
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.example.webwerks.autosms.activity.DashboardActivity;
 import com.example.webwerks.autosms.model.Contacts;
 import com.example.webwerks.autosms.model.request.SendMessagesIdRequest;
 import com.example.webwerks.autosms.model.response.BaseResponse;
+import com.example.webwerks.autosms.model.response.SendMessagesIdResponse;
 import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.google.gson.Gson;
@@ -34,6 +36,7 @@ import static com.example.webwerks.autosms.application.App.CHANNEL_ID;
 public class ForgroundService extends Service {
     private int counter = 0;
     ArrayList<Contacts.User> num = new ArrayList<>();
+    ArrayList<SendMessagesResponse.Result> results = new ArrayList<>();
     String SENT = "SMS_SENT";
     String DELIVERED = "SMS_DELIVERED";
     int ID;
@@ -69,36 +72,36 @@ public class ForgroundService extends Service {
 
     private void Task(Intent intent) {
 
-        String title = intent.getStringExtra("json_data");
-        String respo_data = intent.getStringExtra("respo_data");
+        String demoMessage = intent.getStringExtra("json_data");
+        String liveMessage = intent.getStringExtra("respo_data");
 
         //-------------------------   Demo Messages ------------------ //
 
-       /* Contacts resp = gson.fromJson(title, Contacts.class);
+        /*final Contacts resp = gson.fromJson(demoMessage, Contacts.class);
 
         if (resp != null) {
-
+            num.addAll(resp);
             for (int i = 0; i < resp.size(); i++) {
 
                 final String message = resp.get(i).getMessages();
                 final String phone = resp.get(i).getMobile();
                 final int id = resp.get(i).getId();
 
-                *//*Log.d("MySimpleService", "message " + message);
-                Log.d("MySimpleService", "phone " + phone);
-                Log.d("MySimpleService", "id" + id);*//*
+//                Log.d("MySimpleService", "message " + message);
+//                Log.d("MySimpleService", "phone " + phone);
+//                Log.d("MySimpleService", "id" + id);
 
                 String check_id = String.valueOf(id);
                 String check = Prefs.getDeliverdIds(getApplication());
                 if (check.contains(check_id)) {
-                    Log.d("MySimpleService", "Match");
+                  //  Log.d("MySimpleService", "Match");
                 } else {
-                    Log.d("MySimpleService", "NotMatch");
+                   // Log.d("MySimpleService", "NotMatch");
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("button_cancel", "run: ");
-                            button_cancel(phone, message, id);
+                             Log.d("size", String.valueOf(num.size()));
+                             senMessage(phone, message, id);
                         }
                     }, 20000);
                 }
@@ -107,13 +110,13 @@ public class ForgroundService extends Service {
 
         // ------------------------- Live Messages ------------------ //
 
-        SendMessagesResponse response = gson.fromJson(respo_data, SendMessagesResponse.class);
+        SendMessagesResponse response = gson.fromJson(liveMessage, SendMessagesResponse.class);
 
         Log.d("SendMessagesResponse ", "Task: " + response.getMessage());
         Log.d("TAG", "Task: " + response.getResponse_code());
 
         if (response != null) {
-
+            results.addAll(response.result);
             for (int i = 0; i < response.result.size(); i++) {
 
                 final String message = response.result.get(i).message_content;
@@ -134,7 +137,7 @@ public class ForgroundService extends Service {
                         @Override
                         public void run() {
                             Log.d("button_cancel", "run: ");
-                            demo(phone, message, id);
+                            senMessage(phone, message, id);
                         }
                     }, 20000);
                 }
@@ -142,10 +145,11 @@ public class ForgroundService extends Service {
         }
     }
 
-    private void demo(String number, final String message, int id) {
-        Log.d("MySimpleService", number);
-        Log.d("MySimpleService", message);
-        Log.d("MySimpleService", String.valueOf(id));
+    private void senMessage(String number, final String message, int id) {
+
+//        Log.d("MySimpleService", number);
+//        Log.d("MySimpleService", message);
+//        Log.d("MySimpleService", String.valueOf(id));
 
         ID = id;
         Intent deliveredIntent = new Intent(DELIVERED + ID);
@@ -213,23 +217,64 @@ public class ForgroundService extends Service {
     private void sendApi() {
         String data = Prefs.getDeliverdIds(this);
         Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
         ArrayList<Integer> user = gson.fromJson(data, type);
+        String mobile_number = Prefs.getUserMobile(this);
         if (user != null) {
-            Log.d("MySimpleService", "user_size " + user.size());
-            Log.d("MySimpleService", "num_size " + num.size());
-            if (user.size() == num.size()) {
+//            Log.d("MySimpleService", "user_size " + user.size());
+//            Log.d("MySimpleService", "num_size " + num.size());
+//            Log.d("MySimpleService", "mobile_number " + mobile_number);
+
+            // ------------------------- Dummy Messages ------------------ //
+
+            /*if (user.size() == num.size()) {
 
                 Log.d("MySimpleService", "Api_call");
                 request.setMessage_id(user);
-                final BaseResponse response = RestServices.getInstance().sendMessagesIdResponse(request);
-                Log.d("MySimpleService", "response " + response.getMessage());
-                Log.d("MySimpleService", "response " + response.getResponse_code());
+                request.setMobile_number(mobile_number);
+                final SendMessagesIdResponse response = RestServices.getInstance().sendMessagesIdResponse(request);
+                 if (response!=null){
+                     if (response.getResponse_code().equals("200")) {
+                         Log.d("MySimpleService", "response " + response.getMessage());
+                         Log.d("MySimpleService", "response " + response.getResponse_code());
+                         Log.d("MySimpleService", "response " + response.monthly_rewards);
+                         Intent intent = new Intent("monthly_rewards");
+                         intent.putExtra("Status", response.monthly_rewards);
+                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                     }else {
+                         Log.d("MySimpleService", "error");
+                     }
 
+                 }
+            } else {
+                Log.d("MySimpleService", "Api_notcall");
+            }*/
+
+            // ------------------------- Live Messages ------------------ //
+
+            if (user.size() == results.size()) {
+
+                Log.d("MySimpleService", "Api_call");
+                request.setMessage_id(user);
+                request.setMobile_number(mobile_number);
+                final SendMessagesIdResponse response = RestServices.getInstance().sendMessagesIdResponse(request);
+                if (response!=null){
+                    if (response.getResponse_code().equals("200")) {
+                        Log.d("MySimpleService", "response " + response.getMessage());
+                        Log.d("MySimpleService", "response " + response.getResponse_code());
+                        Log.d("MySimpleService", "response " + response.monthly_rewards);
+                        Prefs.setMonthlyRewards(this,response.monthly_rewards);
+                        Intent intent = new Intent("monthly_rewards");
+                        intent.putExtra("Status", response.monthly_rewards);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    }else {
+                        Log.d("MySimpleService", "error");
+                    }
             } else {
                 Log.d("MySimpleService", "Api_notcall");
             }
+         }
+
         }
     }
 

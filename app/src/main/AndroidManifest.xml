@@ -33,19 +33,17 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".activity.RegisterActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
         <activity android:name=".activity.MyProfileActivity" />
         <activity android:name=".activity.DashboardActivity">
-
-            <!--
-        <intent-filter>
+       <!-- <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-            -->
+        </intent-filter>-->
         </activity>
         <activity android:name=".activity.ShareScreenActivity" />
         <activity android:name=".activity.TermsAndConditionActivity" />

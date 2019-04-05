@@ -12,6 +12,7 @@ public class Prefs {
     private static final String USER_MOBILE = "mobile";
     private static final String DELIVERD_IDS = "deliverIDs";
     private static final String ACTIVATION_CODE = "activation_code";
+    private static final String MONTHLY_REWARDS = "monthly_rewards";
 
     private static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -78,5 +79,15 @@ public class Prefs {
 
     public static String getActivationCode(Context ctx) {
         return getSharedPreferences(ctx).getString(ACTIVATION_CODE, "");
+    }
+
+    public static void setMonthlyRewards(Context ctx, String str) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.putString(MONTHLY_REWARDS, str);
+        editor.apply();
+    }
+
+    public static String getMonthlyRewards(Context ctx) {
+        return getSharedPreferences(ctx).getString(MONTHLY_REWARDS, "");
     }
 }

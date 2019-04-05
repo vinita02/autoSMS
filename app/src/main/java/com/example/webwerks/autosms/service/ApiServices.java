@@ -7,6 +7,7 @@ import com.example.webwerks.autosms.model.response.BaseResponse;
 import com.example.webwerks.autosms.model.response.LoginResponse;
 import com.example.webwerks.autosms.model.response.NetworkResponse;
 import com.example.webwerks.autosms.model.response.RegisterResponse;
+import com.example.webwerks.autosms.model.response.SendMessagesIdResponse;
 import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.model.response.TermsResponse;
 import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
@@ -72,6 +73,6 @@ public interface ApiServices {
 
    @Headers({"Content-Type: application/json"})
    @POST("sms/update-message-status")
-   Single<BaseResponse> sendMessagesId(@Body SendMessagesIdRequest request);
+   Single<SendMessagesIdResponse> sendMessagesId(@Body SendMessagesIdRequest request);
 
 }
