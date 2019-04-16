@@ -56,8 +56,6 @@ public class MyProfileActivity extends BaseActivity {
     Spinner spinner;
     @BindView(R.id.imgBack)
     ImageView imgBack;
-    /* @BindView(R.id.spDate)
-     Spinner spDate;*/
     @BindView(R.id.btnUpdate)
     Button btnUpdate;
     @BindView(R.id.btnCancel)
@@ -97,63 +95,62 @@ public class MyProfileActivity extends BaseActivity {
         progress = new Progress(this, root);
         progress.showProgresBar();
         token = Prefs.getToken(getApplicationContext());
-        //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRvc21zLnBocC1kZXYuaW5cL2F1dG8tc21zLWFwcFwvcHVibGljXC9hcGlcL3YxXC91c2VyXC9yZWdpc3RlciIsImlhdCI6MTU0OTk2NDAzNSwiZXhwIjoxNTUxMTczNjM1LCJuYmYiOjE1NDk5NjQwMzUsImp0aSI6IjI1RTU0eEJaN0dITVJJQnMiLCJzdWIiOjE5LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.I4hH0ELaaCruSmbUyDtW1nx6LCGy9HCXKcRYwX7OaQE";
-        Log.d(TAG, token);
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
         //set View Profile
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getProfileData();
-                if (!CheckNetwork.isConnected(getApplicationContext())) {
-                    showToast("Enable Network State");
-                } else {
-                    viewRequest.setToken(token);
-                    viewModel.viewProfile(viewRequest);
-                }
-            }
-        }, 3000);
-
-        viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
-            @Override
-            public void onChanged(@Nullable UpdateProfileResponse response) {
-                if (response != null) {
-                    //progress.hideProgressBar();
-                    if (response.getResponse_code().equals("200")) {
-                        Log.d(TAG, response.getMessage());
-                        showToast(response.getMessage());
-                        finish();
+        try{
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getProfileData();
+                    if (!CheckNetwork.isConnected(getApplicationContext())) {
+                        showToast("Enable Network State");
                     } else {
-                        showToast(response.getMessage());
-                        Log.d(TAG, response.getMessage());
+                        viewRequest.setToken(token);
+                        viewModel.viewProfile(viewRequest);
                     }
                 }
-            }
-        });
+            }, 3000);
+
+            viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
+                @Override
+                public void onChanged(@Nullable UpdateProfileResponse response) {
+                    if (response != null) {
+                        if (response.getResponse_code().equals("200")) {
+                            showToast(response.getMessage());
+                            finish();
+                        } else {
+                            showToast(response.getMessage());
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            Log.d("TAGA",e.getMessage());
+        }
+
     }
 
     private void getProfileData() {
         viewModel.getViewProfileData().observe(this, new Observer<ViewProfileResponse>() {
             @Override
             public void onChanged(@Nullable ViewProfileResponse response) {
-                if (response != null) {
-                    //progress.hideProgressBar();
-                    if (response.getResponse_code().equals("200")) {
+                try {
+                    if (response != null) {
+                        if (response.getResponse_code().equals("200")) {
 
-                        if (response.error != null) {
-                            Log.d(TAG, response.error);
+                            if (response.error != null) {
+                            } else {
+                                setValues(response);
+                            }
+
                         } else {
-                            //Log.d(TAG, response.result.getOperators().get(0).operator_name);
-                            //Log.d(TAG, response.getMessage());
-                            setValues(response);
-                            //progress.hideProgressBar();
+                            showToast(response.getMessage());
                         }
-
-                    } else {
-                        Log.d(TAG, "error");
-                        showToast(response.getMessage());
                     }
+
+                }catch (Exception e){
+                    Log.d("TAGA",e.getMessage());
                 }
             }
         });
@@ -167,27 +164,19 @@ public class MyProfileActivity extends BaseActivity {
         // set spinner
         if (response.result.operators.size() != 0) {
             networkList.addAll(response.result.getOperators());
-
-            /*final OperatorsAdapter adapter = new OperatorsAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, networkList);
-            spinner.setAdapter(adapter);*/
             final ProfileNetworkAdapter adapter = new ProfileNetworkAdapter(context,networkList);
             spinner.setAdapter(adapter);
-            //int id = Integer.parseInt(response.result.profile.operator_id);
             int id = response.result.profile.operator_id;
             int pos = getSelectedtOperatorPosition(id,networkList);
-            Log.d("TAGAA", String.valueOf(pos));
             spinner.setSelection(pos);
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     operatorId = adapter.getItem(i).id;
-                    /*Log.d("TAGA", String.valueOf(operatorId));
-                    Log.d("TAGA", adapter.getItem(i).getOperator_name());*/
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    Log.d("TAGA", "nothing");
                 }
             });
 
@@ -201,7 +190,6 @@ public class MyProfileActivity extends BaseActivity {
             }
 
             //set sim type
-
             if (response.result.profile.sim_type.contains("paymonthly")) {
                 radioMonthly.setChecked(true);
                 paymentOpt = "paymonthly";
@@ -209,21 +197,6 @@ public class MyProfileActivity extends BaseActivity {
                 radioPayg.setChecked(true);
                 paymentOpt = "payg";
             }
-            //set billing date
-
-            /*int dateId = Integer.parseInt(response.result.profile.billing_date);
-            spDate.setSelection(dateId - 1);
-            spDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    billingDate = String.valueOf(spDate.getSelectedItem());
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });*/
             //set activation code
             txtValidationCode.setText(response.result.activation_codes.code);
             validationCode = txtValidationCode.getText().toString();
@@ -240,7 +213,6 @@ public class MyProfileActivity extends BaseActivity {
                   break;
               }
           }
-
           return pos;
     }
 
@@ -274,25 +246,21 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void update() {
-        Log.d("TAGA", mobile);
-        Log.d("TAGA", String.valueOf(operatorId));
-        Log.d("TAGA", paymentOpt);
-        // Log.d("TAGA",  );
-        Log.d("TAGA", smsPlan);
-        Log.d("TAGA", validationCode);
-        if (!CheckNetwork.isConnected(this)) {
-            showToast("Enable Network State");
-        } else {
-            //progress.showProgresBar();
-            updateRequest.setToken(token);
-            updateRequest.setMobile_number(mobile);
-            //updateRequest.setOperator(Integer.parseInt(operatorId));
-            updateRequest.setOperator(operatorId);
-            updateRequest.setSim_type(paymentOpt);
-           // updateRequest.setBilling_date("0");
-            updateRequest.setSms_plan(smsPlan);
-            updateRequest.setActivation_code(validationCode);
-            viewModel.updateProfile(updateRequest);
+        try {
+            if (!CheckNetwork.isConnected(this)) {
+                showToast("Enable Network State");
+            } else {
+                updateRequest.setToken(token);
+                updateRequest.setMobile_number(mobile);
+                updateRequest.setOperator(operatorId);
+                updateRequest.setSim_type(paymentOpt);
+                updateRequest.setSms_plan(smsPlan);
+                updateRequest.setActivation_code(validationCode);
+                viewModel.updateProfile(updateRequest);
+            }
+        }catch (Exception e){
+            Log.d("TAGA",e.getMessage());
         }
+
     }
 }

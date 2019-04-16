@@ -39,7 +39,6 @@ public class ShareScreenActivity extends BaseActivity {
     EditText etMobile;
     @BindView(R.id.txtRewardPercent)
     TextView txtRewardPercent;
-
     static final int PICK_CONTACT = 1;
     static final int PERMISSION_REQUEST_CONTACT = 100;
     Context context;
@@ -75,6 +74,22 @@ public class ShareScreenActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Log.d("ShareScreenActivity","onStart");
+        String reward = Prefs.getMonthlyRewards(this);
+        setPercnatage(reward);
+    }
+
+    private void setPercnatage(String message) {
+        if (message.equals("")){
+            message = "0";
+        }
+        txtRewardPercent.setText(message + "%");
+    }
+
+
     @OnClick({R.id.imgClose, R.id.btnShareNow, R.id.txtRewardPercent})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -92,7 +107,6 @@ public class ShareScreenActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
-                // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.READ_CONTACTS)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -128,11 +142,9 @@ public class ShareScreenActivity extends BaseActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CONTACT: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getContact();
-
                 } else {
                     showToast("No permission for contacts");
                 }
@@ -140,7 +152,6 @@ public class ShareScreenActivity extends BaseActivity {
             }
         }
     }
-
 
     //code
     @Override
@@ -154,7 +165,6 @@ public class ShareScreenActivity extends BaseActivity {
                     Uri contactData = data.getData();
                     Cursor c = managedQuery(contactData, null, null, null, null);
                     if (c.moveToFirst()) {
-
 
                         String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
 
@@ -171,7 +181,6 @@ public class ShareScreenActivity extends BaseActivity {
                             etMobile.setText(mobile);
                         }
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        Log.d("TAGA", name);
                     }
                 }
                 break;
@@ -188,19 +197,17 @@ public class ShareScreenActivity extends BaseActivity {
     private void sendInvitation() {
 
         mobile = etMobile.getText().toString();
-        Log.d("TAGA", mobile);
-//        String mobile = "7883555555";
-        String link = "www.MobileRewards.com";
-        String code = Prefs.getActivationCode(getApplicationContext());
-//        String code = "KP";
 
+        String link = "http://mobilerewards.mobi/MobileRewards.apk";
+        String code = Prefs.getActivationCode(getApplicationContext());
 
         if (!Validation.isValidPhone(mobile)) {
             showToast("Mobile number is not Valid");
         } else {
             Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
-            smsIntent.setData(Uri.parse("smsto: " + mobile));  // This ensures only SMS apps respond
-            smsIntent.putExtra("sms_body", "I'am using the Mobile Reward Application. I'am inviting you to download the app with the help of below link and activation code.\n"
+            smsIntent.setData(Uri.parse("smsto: " + mobile));
+            smsIntent.putExtra("sms_body", "\n" +
+                    "I am using the Mobile Rewards Application. I am inviting you to download the App with the help of the below link and activation code.\n"
                     + "link: " + link + "\n" + "activation code: " + code);
             if (smsIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
                 startActivity(smsIntent);

@@ -52,8 +52,6 @@ public class RegisterActivity extends BaseActivity {
     ImageView imgMobilereward;
     @BindView(R.id.imgBack)
     ImageView imgBack;
-    /* @BindView(R.id.spDate)
-     Spinner spDate;*/
     @BindView(R.id.spinner)
     Spinner spinner;
     @BindView(R.id.rgSmsplan)
@@ -76,8 +74,6 @@ public class RegisterActivity extends BaseActivity {
     boolean checkReward = true;
     private Progress progress;
     Context context;
-   // private ProgressBar pBar;
-  //  ProgressDialog dialog;
 
 
     public static void open(LoginActivity activity) {
@@ -92,62 +88,53 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void initViews() {
         context = this;
-       // pBar = (ProgressBar) findViewById(R.id.pBar);
-       // pBar.setVisibility(View.VISIBLE);
-        //dialog = new ProgressDialog(this);
-       // dialog.setTitle("Loading");
-        //dialog.show();
         progress = new Progress(this, root);
         Prefs.setLaunchActivity(RegisterActivity.this, "registerActivity");
         progress.showProgresBar();
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         //List of NetworkOperators
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getNetworkList();
-                if (!CheckNetwork.isConnected(getApplicationContext())) {
-                    showToast("Enable Network State");
-                } else {
-                    viewModel.fetchNetworkOperator();
-                }
-            }
-        }, 3000);
-        viewModel.getRegisterResponse().observe(this, new Observer<RegisterResponse>() {
-            @Override
-            public void onChanged(@Nullable RegisterResponse response) {
-                if (response != null) {
-                    //progress.hideProgressBar();
-                   // dialog.hide();
-                    Log.d("PROGRESS", "onChanged");
-                   // pBar.setVisibility(View.GONE);
-                    if (response.getResponse_code().equals("200")) {
-                        Prefs.setToken(context, response.result.token);
-                        Prefs.setUserMobile(context, response.result.mobile_number);
-                        Log.d(TAG, response.result.activation_code);
-                        Prefs.setActivationCode(context, response.result.activation_code);
-                        DashboardActivity.open(context);
-                        finish();
-                        showToast(response.getMessage());
+        try {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    getNetworkList();
+                    if (!CheckNetwork.isConnected(getApplicationContext())) {
+                        showToast("Enable Network State");
                     } else {
-                        Log.d(TAG, "error");
-                        showToast(response.getMessage());
+                        viewModel.fetchNetworkOperator();
                     }
                 }
-            }
-        });
+            }, 3000);
+            viewModel.getRegisterResponse().observe(this, new Observer<RegisterResponse>() {
+                @Override
+                public void onChanged(@Nullable RegisterResponse response) {
+                    if (response != null) {
+                        if (response.getResponse_code().equals("200")) {
+                            Prefs.setToken(context, response.result.token);
+                            Prefs.setUserMobile(context, response.result.mobile_number);
+                            Prefs.setActivationCode(context, response.result.activation_code);
+                            DashboardActivity.open(context);
+                            finish();
+                            showToast(response.getMessage());
+                        } else {
+                            showToast(response.getMessage());
+                        }
+                    }
+                }
+            });
+        }catch (Exception e){
+            Log.d("TAGA",e.getMessage());
+        }
+
     }
 
 
     private void getNetworkList() {
-        //pBar.setVisibility(View.VISIBLE);
         viewModel.getNetworkList().observe(this, new Observer<NetworkResponse>() {
             @Override
             public void onChanged(@Nullable final NetworkResponse response) {
                 if (response != null) {
-                    //dialog.hide();
-
                     if (response.getResponse_code().equals("200")) {
                         final NetworkResponse.Operators operators = new NetworkResponse.Operators();
                         operators.setId("0");
@@ -155,9 +142,6 @@ public class RegisterActivity extends BaseActivity {
                         networkList.add(operators);
                         if (response.result.operators.size() != 0) {
                             setOperators(response);
-
-                        } else {
-                            Log.d("TAGA", response.getMessage());
                         }
                     } else {
                         showToast(response.getMessage());
@@ -170,18 +154,12 @@ public class RegisterActivity extends BaseActivity {
 
     private void setOperators(NetworkResponse response) {
         networkList.addAll(response.result.getOperators());
-        Log.d("TAGA", networkList.toString());
-        /*final MobileNetworkAdapter adapter = new MobileNetworkAdapter(getApplicationContext(), R.layout.spinner_network, networkList);
-        spinner.setAdapter(adapter);*/
         final RegisterNetworkAdapter adapter = new RegisterNetworkAdapter(context,networkList);
         spinner.setAdapter(adapter);
-        //simple_spinner_item
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 operatorId = adapter.getItem(i).getId();
-                Log.d("TAGA", operatorId);
-                Log.d("TAGA", adapter.getItem(i).getOperator_name());
             }
 
             @Override
@@ -189,7 +167,6 @@ public class RegisterActivity extends BaseActivity {
                 Log.d("TAGA", "nothing");
             }
         });
-        //pBar.setVisibility(View.GONE);
         progress.hideProgressBar();
     }
 
@@ -215,7 +192,6 @@ public class RegisterActivity extends BaseActivity {
         spCountrycode.registerPhoneNumberTextView(etmobile);
         prefix = spCountrycode.getSelectedCountryCode();
         String mobile = getMobileNumber();
-        Log.d("number", mobile);
         validationCode = etValidationCode.getText().toString();
         password = etPassword.getText().toString();
 
@@ -233,17 +209,11 @@ public class RegisterActivity extends BaseActivity {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
             } else {
-                //progress.showProgresBar();
-               // dialog.show();
-               // pBar.setVisibility(View.VISIBLE);
-                Log.d("TAGAGA",mobile);
-               // request.setMobile_number(prefix + mobile);
                 request.setMobile_number(mobile);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);
                 request.setSms_plan(smsPlan);
-                //request.setBilling_date("0");
                 viewModel.register(request);
             }
         }
@@ -252,13 +222,17 @@ public class RegisterActivity extends BaseActivity {
     private String getMobileNumber() {
         String mobileNumber;
         mobile = etmobile.getText().toString();
-        char first_char = mobile.charAt(0);
-        Log.d("TAGA", String.valueOf(first_char));
-        if (first_char=='0'){
-            mobileNumber = prefix + mobile.substring(1);
+        if (mobile.length()>0){
+            char first_char = mobile.charAt(0);
+            if (first_char=='0'){
+                mobileNumber = prefix + mobile.substring(1);
+            }else {
+                mobileNumber = prefix + mobile;
+            }
         }else {
-            mobileNumber = prefix + mobile;
+            mobileNumber = "";
         }
+
         return mobileNumber;
     }
 
