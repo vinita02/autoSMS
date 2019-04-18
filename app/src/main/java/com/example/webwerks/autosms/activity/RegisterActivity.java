@@ -74,6 +74,8 @@ public class RegisterActivity extends BaseActivity {
     boolean checkReward = true;
     private Progress progress;
     Context context;
+    ProgressDialog pDialog;
+    Observer RegisterResponse;
 
 
     public static void open(LoginActivity activity) {
@@ -89,6 +91,7 @@ public class RegisterActivity extends BaseActivity {
     protected void initViews() {
         context = this;
         progress = new Progress(this, root);
+        showProgress();
         Prefs.setLaunchActivity(RegisterActivity.this, "registerActivity");
         progress.showProgresBar();
         viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
@@ -106,29 +109,53 @@ public class RegisterActivity extends BaseActivity {
                     }
                 }
             }, 3000);
-            viewModel.getRegisterResponse().observe(this, new Observer<RegisterResponse>() {
-                @Override
-                public void onChanged(@Nullable RegisterResponse response) {
-                    if (response != null) {
-                        if (response.getResponse_code().equals("200")) {
-                            Prefs.setToken(context, response.result.token);
-                            Prefs.setUserMobile(context, response.result.mobile_number);
-                            Prefs.setActivationCode(context, response.result.activation_code);
-                            DashboardActivity.open(context);
-                            finish();
-                            showToast(response.getMessage());
-                        } else {
-                            showToast(response.getMessage());
-                        }
-                    }
-                }
-            });
-        }catch (Exception e){
-            Log.d("TAGA",e.getMessage());
+
+            //getRegisterResponse
+            getRegisterResponse();
+
+        } catch (Exception e) {
+            Log.d("TAGA", e.getMessage());
         }
 
     }
 
+    private void showProgress() {
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Registering...");
+    }
+
+    private void getRegisterResponse() {
+
+        viewModel.getRegisterResponse().observe(this, new Observer<RegisterResponse>() {
+            @Override
+            public void onChanged(@Nullable final RegisterResponse response) {
+                if (response != null) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response.getResponse_code().equals("200")) {
+                                //progress.hideProgressBar();
+                                pDialog.dismiss();
+                                Prefs.setToken(context, response.result.token);
+                                Prefs.setUserMobile(context, response.result.mobile_number);
+                                Prefs.setActivationCode(context, response.result.activation_code);
+                                DashboardActivity.open(context);
+                                finish();
+                                showToast(response.getMessage());
+                            } else {
+                                pDialog.dismiss();
+                                //progress.hideProgressBar();
+                                showToast(response.getMessage());
+                            }
+                        }
+                    }, 2000);
+
+                }
+            }
+        });
+
+    }
 
     private void getNetworkList() {
         viewModel.getNetworkList().observe(this, new Observer<NetworkResponse>() {
@@ -154,7 +181,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void setOperators(NetworkResponse response) {
         networkList.addAll(response.result.getOperators());
-        final RegisterNetworkAdapter adapter = new RegisterNetworkAdapter(context,networkList);
+        final RegisterNetworkAdapter adapter = new RegisterNetworkAdapter(context, networkList);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -189,6 +216,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void register() {
+        //pDialog.show();
         spCountrycode.registerPhoneNumberTextView(etmobile);
         prefix = spCountrycode.getSelectedCountryCode();
         String mobile = getMobileNumber();
@@ -209,27 +237,43 @@ public class RegisterActivity extends BaseActivity {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
             } else {
+                // hideProgress();
+                //progress.showProgresBar();
+                pDialog.show();
                 request.setMobile_number(mobile);
                 request.setActivation_code(validationCode);
                 request.setOperator(Integer.parseInt(operatorId));
                 request.setSim_type(paymentOpt);
                 request.setSms_plan(smsPlan);
                 viewModel.register(request);
+
             }
         }
     }
 
+//    private void hideProgress() {
+//
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//               progress.hideProgressBar();
+//            }
+//        }, 1500);
+//
+//    }
+
     private String getMobileNumber() {
         String mobileNumber;
         mobile = etmobile.getText().toString();
-        if (mobile.length()>0){
+        if (mobile.length() > 0) {
             char first_char = mobile.charAt(0);
-            if (first_char=='0'){
+            if (first_char == '0') {
                 mobileNumber = prefix + mobile.substring(1);
-            }else {
+            } else {
                 mobileNumber = prefix + mobile;
             }
-        }else {
+        } else {
             mobileNumber = "";
         }
 

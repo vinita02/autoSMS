@@ -2,6 +2,7 @@ package com.example.webwerks.autosms.activity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -71,6 +72,7 @@ public class MyProfileActivity extends BaseActivity {
     @BindView(R.id.root)
     RelativeLayout root;
     Progress progress;
+    ProgressDialog pDialog;
 
     MyProfileViewModel viewModel;
     String token, mobile;
@@ -92,6 +94,7 @@ public class MyProfileActivity extends BaseActivity {
     @Override
     protected void initViews() {
         context = this;
+        showProgress();
         progress = new Progress(this, root);
         progress.showProgresBar();
         token = Prefs.getToken(getApplicationContext());
@@ -112,22 +115,47 @@ public class MyProfileActivity extends BaseActivity {
                 }
             }, 3000);
 
-            viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
-                @Override
-                public void onChanged(@Nullable UpdateProfileResponse response) {
-                    if (response != null) {
-                        if (response.getResponse_code().equals("200")) {
-                            showToast(response.getMessage());
-                            finish();
-                        } else {
-                            showToast(response.getMessage());
-                        }
-                    }
-                }
-            });
+            //getUpdateResponse
+            getUpdateProfileResponse();
+
         }catch (Exception e){
             Log.d("TAGA",e.getMessage());
         }
+
+    }
+
+    private void showProgress() {
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Uploading...");
+    }
+
+
+    private void getUpdateProfileResponse() {
+
+        viewModel.getUpdateProfileData().observe(this, new Observer<UpdateProfileResponse>() {
+            @Override
+            public void onChanged(@Nullable final UpdateProfileResponse response) {
+                if (response != null) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response.getResponse_code().equals("200")) {
+//                                progress.hideProgressBar();
+                                pDialog.dismiss();
+                                showToast(response.getMessage());
+                                finish();
+                            } else {
+//                                progress.hideProgressBar();
+                                pDialog.dismiss();
+                                showToast(response.getMessage());
+                            }
+                        }
+                    },2000);
+
+                }
+            }
+        });
 
     }
 
@@ -250,6 +278,8 @@ public class MyProfileActivity extends BaseActivity {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
             } else {
+//                progress.showProgresBar();
+                pDialog.show();
                 updateRequest.setToken(token);
                 updateRequest.setMobile_number(mobile);
                 updateRequest.setOperator(operatorId);

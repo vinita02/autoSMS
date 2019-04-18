@@ -199,6 +199,7 @@ public class ShareScreenActivity extends BaseActivity {
         mobile = etMobile.getText().toString();
 
         String link = "http://mobilerewards.mobi/MobileRewards.apk";
+        String newlink = "http://mobilerewards.mobi/mr.apk";
         String code = Prefs.getActivationCode(getApplicationContext());
 
         if (!Validation.isValidPhone(mobile)) {
@@ -206,16 +207,12 @@ public class ShareScreenActivity extends BaseActivity {
         } else {
             Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
             smsIntent.setData(Uri.parse("smsto: " + mobile));
-            smsIntent.putExtra("sms_body", "\n" +
-                    "I am using the Mobile Rewards Application. I am inviting you to download the App with the help of the below link and activation code.\n"
-                    + "link: " + link + "\n" + "activation code: " + code);
+            smsIntent.putExtra("sms_body", "I am using the Mobile Rewards Application. I am inviting you to download the App with the help of the below link and activation code. If the link doesn’t download, please copy and paste the link into Google Chrome URL Address Bar and download from there.\n\n"
+                    + "Link: " + newlink + "\n\n" + "Activation Code: " + code);
             if (smsIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
                 startActivity(smsIntent);
             }
             etMobile.setText("");
         }
     }
-
-
-
 }

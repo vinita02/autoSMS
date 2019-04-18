@@ -53,12 +53,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-             <include
-                 android:id="@+id/cardView"
-                 layout="@layout/register_card_design"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="@dimen/_2sdp" />
+                <include
+                    android:id="@+id/cardView"
+                    layout="@layout/register_card_design"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <ProgressBar
                     android:id="@+id/pBar"
