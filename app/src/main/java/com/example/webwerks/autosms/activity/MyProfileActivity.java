@@ -1,13 +1,17 @@
 package com.example.webwerks.autosms.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -73,6 +77,7 @@ public class MyProfileActivity extends BaseActivity {
     RelativeLayout root;
     Progress progress;
     ProgressDialog pDialog;
+    AlertDialog.Builder builder;
 
     MyProfileViewModel viewModel;
     String token, mobile;
@@ -98,6 +103,7 @@ public class MyProfileActivity extends BaseActivity {
         progress = new Progress(this, root);
         progress.showProgresBar();
         token = Prefs.getToken(getApplicationContext());
+        //token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC92MVwvdXNlclwvcmVnaXN0ZXIiLCJpYXQiOjE1NTgwNzY5NDQsIm5iZiI6MTU1ODA3Njk0NCwianRpIjoiSHA5WmgxOGpJMm1tdFJHbCIsInN1YiI6MjY2LCJwcnYiOiIzMjk2M2E2MDZjMmYxNzFmMWMxNDMzMWU3Njk3NjZjZDU5MTJlZDE1In0.mUlhxvBKgELu3qZehB0AdGlixDornHYPvT2LjA1tpU4";
         viewModel = ViewModelProviders.of(this).get(MyProfileViewModel.class);
         //set View Profile
         try{
@@ -121,7 +127,6 @@ public class MyProfileActivity extends BaseActivity {
         }catch (Exception e){
             Log.d("TAGA",e.getMessage());
         }
-
     }
 
     private void showProgress() {
@@ -136,27 +141,18 @@ public class MyProfileActivity extends BaseActivity {
             @Override
             public void onChanged(@Nullable final UpdateProfileResponse response) {
                 if (response != null) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
                             if (response.getResponse_code().equals("200")) {
-//                                progress.hideProgressBar();
                                 pDialog.dismiss();
                                 showToast(response.getMessage());
                                 finish();
                             } else {
-//                                progress.hideProgressBar();
-                                pDialog.dismiss();
+                                Log.d("TAGA","error");
                                 showToast(response.getMessage());
+                                pDialog.dismiss();
                             }
                         }
-                    },2000);
-
-                }
             }
         });
-
     }
 
     private void getProfileData() {
@@ -166,22 +162,45 @@ public class MyProfileActivity extends BaseActivity {
                 try {
                     if (response != null) {
                         if (response.getResponse_code().equals("200")) {
-
-                            if (response.error != null) {
-                            } else {
+                                Prefs.setToken(context,response.result.token);
+                                //Log.d("TAGA",Prefs.getToken(context));
                                 setValues(response);
-                            }
 
                         } else {
-                            showToast(response.getMessage());
+//                            showToast(response.getMessage());
+                            progress.hideProgressBar();
+                            userNotFoundPopup(response.getMessage());
                         }
                     }
-
                 }catch (Exception e){
                     Log.d("TAGA",e.getMessage());
                 }
             }
         });
+    }
+
+    private void userNotFoundPopup(String message) {
+
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle(message + ".");
+        builder.setMessage("Please Register again.");
+        builder.setCancelable(false);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                  finish();
+//                  moveTaskToBack(true);
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                intent.putExtra("EXIT", true);
+                startActivity(intent);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void setValues(ViewProfileResponse response) {
@@ -277,20 +296,24 @@ public class MyProfileActivity extends BaseActivity {
         try {
             if (!CheckNetwork.isConnected(this)) {
                 showToast("Enable Network State");
-            } else {
-//                progress.showProgresBar();
-                pDialog.show();
-                updateRequest.setToken(token);
-                updateRequest.setMobile_number(mobile);
-                updateRequest.setOperator(operatorId);
-                updateRequest.setSim_type(paymentOpt);
-                updateRequest.setSms_plan(smsPlan);
-                updateRequest.setActivation_code(validationCode);
-                viewModel.updateProfile(updateRequest);
+                return;
             }
-        }catch (Exception e){
-            Log.d("TAGA",e.getMessage());
-        }
+            pDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateRequest.setToken(token);
+                    updateRequest.setMobile_number(mobile);
+                    updateRequest.setOperator(operatorId);
+                    updateRequest.setSim_type(paymentOpt);
+                    updateRequest.setSms_plan(smsPlan);
+                    updateRequest.setActivation_code(validationCode);
+                    viewModel.updateProfile(updateRequest);
+                }
+            },2000);
 
+        }catch (Exception e){
+           //Log.d("TAGA",e.getMessage());
+        }
     }
 }

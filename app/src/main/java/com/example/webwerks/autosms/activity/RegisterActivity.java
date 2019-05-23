@@ -130,10 +130,6 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onChanged(@Nullable final RegisterResponse response) {
                 if (response != null) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
                             if (response.getResponse_code().equals("200")) {
                                 //progress.hideProgressBar();
                                 pDialog.dismiss();
@@ -149,9 +145,6 @@ public class RegisterActivity extends BaseActivity {
                                 showToast(response.getMessage());
                             }
                         }
-                    }, 2000);
-
-                }
             }
         });
 
@@ -216,38 +209,48 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void register() {
-        //pDialog.show();
-        spCountrycode.registerPhoneNumberTextView(etmobile);
-        prefix = spCountrycode.getSelectedCountryCode();
-        String mobile = getMobileNumber();
-        validationCode = etValidationCode.getText().toString();
-        password = etPassword.getText().toString();
+        try {
+            //pDialog.show();
+            spCountrycode.registerPhoneNumberTextView(etmobile);
+            prefix = spCountrycode.getSelectedCountryCode();
+            final String mobile = getMobileNumber();
+            validationCode = etValidationCode.getText().toString();
+            password = etPassword.getText().toString();
 
-        if (!spCountrycode.isValid()) {
-            showToast("Mobile number not valid");
-        } else if (Validation.isValidMobilenetwork(operatorId)) {
-            showToast("Select Mobile network");
-        } else if (!ischeckPaymentopt()) {
-            showToast("Select Mobile sim");
-        } else if (!ischeckSMSplan()) {
-            showToast("Select SMS plan");
-        } else if (!Validation.isValidValidationcode(validationCode)) {
-            showToast("enter Validation code");
-        } else {
-            if (!CheckNetwork.isConnected(this)) {
-                showToast("Enable Network State");
-            } else {
-                // hideProgress();
-                //progress.showProgresBar();
-                pDialog.show();
-                request.setMobile_number(mobile);
-                request.setActivation_code(validationCode);
-                request.setOperator(Integer.parseInt(operatorId));
-                request.setSim_type(paymentOpt);
-                request.setSms_plan(smsPlan);
-                viewModel.register(request);
-
+            if (!spCountrycode.isValid()) {
+                showToast("Mobile number not valid");
+                return;
             }
+            if (Validation.isValidMobilenetwork(operatorId)) {
+                showToast("Select Mobile network");
+                return;
+            } if (!ischeckPaymentopt()) {
+                showToast("Select Mobile sim");
+                return;
+            } if (!ischeckSMSplan()) {
+                showToast("Select SMS plan");
+                return;
+            } if (!Validation.isValidValidationcode(validationCode)) {
+                showToast("enter Validation code");
+                return;
+            }if (!CheckNetwork.isConnected(this)) {
+                showToast("Enable Network State");
+                return;
+            }
+            pDialog.show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+            request.setMobile_number(mobile);
+            request.setActivation_code(validationCode);
+            request.setOperator(Integer.parseInt(operatorId));
+            request.setSim_type(paymentOpt);
+            request.setSms_plan(smsPlan);
+            viewModel.register(request);
+                }
+            },2000);
+        } catch (Exception e) {
+            Log.d("TAGA", e.getMessage());
         }
     }
 

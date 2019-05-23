@@ -10,7 +10,7 @@ public class Prefs {
     private static final String USER_DATA = "user_data";
     private static final String TOKEN = "token";
     private static final String USER_MOBILE = "mobile";
-    private static final String DELIVERD_IDS = "deliverIDs";
+    private static final String SENT_IDS = "deliverIDs";
     private static final String ACTIVATION_CODE = "activation_code";
     private static final String MONTHLY_REWARDS = "monthly_rewards";
     private static final String RESPONSE_IDS = "responseIDs";
@@ -62,14 +62,14 @@ public class Prefs {
 
 
 
-    public static void setDeliverdIds(Context ctx, String str) {
+    public static void setSentIds(Context ctx, String str) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(DELIVERD_IDS, str);
+        editor.putString(SENT_IDS, str);
         editor.apply();
     }
 
-    public static String getDeliverdIds(Context ctx) {
-        return getSharedPreferences(ctx).getString(DELIVERD_IDS, "");
+    public static String getSentIds(Context ctx) {
+        return getSharedPreferences(ctx).getString(SENT_IDS, "");
     }
 
     public static void setActivationCode(Context ctx, String str) {

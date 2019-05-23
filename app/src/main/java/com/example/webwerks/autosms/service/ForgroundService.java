@@ -1,6 +1,7 @@
 package com.example.webwerks.autosms.service;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -16,7 +17,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.activity.DashboardActivity;
 import com.example.webwerks.autosms.model.Contacts;
@@ -26,11 +26,9 @@ import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -38,7 +36,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-
 import static com.example.webwerks.autosms.application.App.CHANNEL_ID;
 
 
@@ -50,9 +47,10 @@ public class ForgroundService extends Service {
     String SENT = "SMS_SENT";
     String DELIVERED = "SMS_DELIVERED";
     int ID;
-    ArrayList<String> deliverIDs = new ArrayList<>();
+    ArrayList<String> sentID = new ArrayList<>();
     Gson gson = new Gson();
     SendMessagesIdRequest request = new SendMessagesIdRequest();
+    int count;
 
     @Override
     public void onCreate() {
@@ -66,7 +64,6 @@ public class ForgroundService extends Service {
         Intent notificationIntent = new Intent(this, DashboardActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Mobile Rewards")
                 .setContentText(input)
@@ -98,22 +95,24 @@ public class ForgroundService extends Service {
                                 return Observable.create(new ObservableOnSubscribe<SendMessagesResponse.Result>() {
                                     @Override
                                     public void subscribe(final ObservableEmitter<SendMessagesResponse.Result> emitter) throws Exception {
-
-                                        //sendMessages(data.mobile_number,data.message_content, Integer.parseInt(data.message_id));
-                                        String check_id = String.valueOf(data.message_id);
-                                        String check = Prefs.getDeliverdIds(getApplication());
-                                        if (check.contains(check_id)) {
-                                            Log.d("MySimpleService", "Match");
-                                        } else {
-                                            Log.d("MySimpleService", "NotMatch");
-                                            sendMessages(data.mobile_number, data.message_content, Integer.parseInt(data.message_id));
-                                        }
-                                        Observable.timer(2, TimeUnit.MINUTES).doAfterNext(new Consumer<Long>() {
-                                            @Override
-                                            public void accept(Long aLong) throws Exception {
-                                                emitter.onComplete();
+                                        try {
+                                            String check_id = String.valueOf(data.message_id);
+                                            String check = Prefs.getSentIds(getApplication());
+                                            if (check.contains(check_id)) {
+                                                Log.d("MySimpleService", "Match");
+                                            } else {
+                                                Log.d("MySimpleService", "NotMatch");
+                                                sendMessages(data.mobile_number, data.message_content, Integer.parseInt(data.message_id));
                                             }
-                                        }).subscribe();
+                                            Observable.timer(2, TimeUnit.MINUTES).doAfterNext(new Consumer<Long>() {
+                                                @Override
+                                                public void accept(Long aLong) throws Exception {
+                                                    emitter.onComplete();
+                                                }
+                                            }).subscribe();
+                                        }catch (Exception e){
+//                                            Log.d("TAGA", e.getMessage());
+                                        }
                                     }
                                 }).ignoreElements();
                             }
@@ -122,35 +121,27 @@ public class ForgroundService extends Service {
         } catch (Exception e) {
             //Log.d("TAGA", e.getMessage());
         }
-
     }
 
-    private void sendMessages(String number, final String message, int id) {
-
-        Log.d("MySimpleService", number);
-        Log.d("MySimpleService", String.valueOf(id));
+    @SuppressLint("CheckResult")
+    private void sendMessages(final String num, String message, int id){
 
         ID = id;
-        Intent deliveredIntent = new Intent(DELIVERED + ID);
-        deliveredIntent.putExtra("messageID", ID);
-
-        Intent sentIntent = new Intent(SENT + ID);
-        sentIntent.putExtra("ID", ID);
-
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-                deliveredIntent, PendingIntent.FLAG_ONE_SHOT);
-
-//        PendingIntent sentPI = PendingIntent.getBroadcast(this,0,
-//                sentIntent,PendingIntent.FLAG_ONE_SHOT);
-
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
-                new Intent(SENT), 0);
-
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(number, null, message, sentPI, deliveredPI);
+        ArrayList<String> parts =sms.divideMessage(message);
+        ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+        ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
 
-//        SmsManager sms = SmsManager.getDefault();
-//        sms.sendTextMessage("8805429015", null, "hiii 12april", sentPI, deliveredPI);
+        final int numParts = parts.size();
+        count = numParts;
+        Log.d("TAGA", String.valueOf(count));
+
+        for (int i = 0; i < numParts; i++) {
+            sentIntents.add(PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0));
+            deliveryIntents.add(PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0));
+        }
+
+        sms.sendMultipartTextMessage(num,null, parts, sentIntents, deliveryIntents);
 
         //---when the SMS has been sent---
         registerReceiver(new BroadcastReceiver() {
@@ -158,18 +149,19 @@ public class ForgroundService extends Service {
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
+                        count = count-1;
+                        Log.d("TAGA","count"+count);
                         Log.d("TAGA", "SENT");
                         Log.d("TAGA", String.valueOf(ID));
-                        //Log.d("TAGA",arg1.toString());
-                        deliverIDs.add(String.valueOf(ID));
-                        String json = gson.toJson(deliverIDs);
-                        Prefs.setDeliverdIds(getApplicationContext(), json);
+                        if (count==0){
+                        Log.d("TAGA", "CallApi");
+                        sentID.add(String.valueOf(ID));
+                        String json = gson.toJson(sentID);
+                        Prefs.setSentIds(getApplicationContext(), json);
                         updateDeliverIds();
-
-//                        int strId = arg1.getIntExtra("ID", -1);
-//                        if (strId != -1) {
-//                         Log.d("TAGA", String.valueOf(strId));
-//                        }
+                        }else {
+                            Log.d("TAGA", "ApiNotCall");
+                        }
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         break;
@@ -184,25 +176,78 @@ public class ForgroundService extends Service {
             }
         }, new IntentFilter(SENT));
 
-        //---when the SMS has been delivered---
+        //---when the SMS has been delivered---//
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
-//                int messageID = arg1.getIntExtra("messageID", -1);
-//                if (messageID != -1) {
-//                    deliverIDs.add(String.valueOf(messageID));
-//                    String json = gson.toJson(deliverIDs);
-//                    Prefs.setDeliverdIds(getApplicationContext(), json);
-//                    updateDeliverIds();
-//                }
+                Log.d("TAGA", "DELIVERED");
             }
         }, new IntentFilter(DELIVERED + ID));
-
     }
+
+
+//    private void sendMessages(String number, final String message, int id) {
+//
+//        Log.d("MySimpleService", number);
+//        Log.d("MySimpleService", String.valueOf(id));
+//
+//        ID = id;
+//        Intent deliveredIntent = new Intent(DELIVERED + ID);
+//        deliveredIntent.putExtra("messageID", ID);
+//
+//        Intent sentIntent = new Intent(SENT + ID);
+//        sentIntent.putExtra("ID", ID);
+//
+//        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
+//                deliveredIntent, PendingIntent.FLAG_ONE_SHOT);
+//
+//
+//        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+//                new Intent(SENT), 0);
+//
+////        SmsManager sms = SmsManager.getDefault();
+////        sms.sendTextMessage(number, null, message, sentPI, deliveredPI);
+//
+//
+//        //---when the SMS has been sent---
+//        registerReceiver(new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context arg0, Intent arg1) {
+//                switch (getResultCode()) {
+//                    case Activity.RESULT_OK:
+//                        Log.d("TAGA", "SENT");
+//                        Log.d("TAGA", String.valueOf(ID));
+//                        sentID.add(String.valueOf(ID));
+//                        String json = gson.toJson(sentID);
+//                        Prefs.setDeliverdIds(getApplicationContext(), json);
+//                        updateDeliverIds();
+//                        break;
+//                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+//                        break;
+//                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+//                        Toast.makeText(getBaseContext(), "No service", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case SmsManager.RESULT_ERROR_NULL_PDU:
+//                        break;
+//                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+//                        break;
+//                }
+//            }
+//        }, new IntentFilter(SENT));
+//
+//        //---when the SMS has been delivered---
+//        registerReceiver(new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context arg0, Intent arg1) {
+//
+//            }
+//        }, new IntentFilter(DELIVERED + ID));
+//
+//    }
 
     private void updateDeliverIds() {
         try {
-            String data = Prefs.getDeliverdIds(this);
+            String data = Prefs.getSentIds(this);
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<String>>() {
             }.getType();

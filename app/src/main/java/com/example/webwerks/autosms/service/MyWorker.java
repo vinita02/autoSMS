@@ -32,12 +32,9 @@ public class MyWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-
-        String taskDesc = getInputData().getString(TASK_DESC);
-
+//        Intent serviceIntent = new Intent(getApplicationContext(), ForgroundService.class);
+//        ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
         getUserMessages();
-        //displayNotification("My Worker", taskDesc);
-        // setOutputData(data);
         Log.d("TAGA", "doWork");
         return Result.success();
     }
@@ -45,6 +42,7 @@ public class MyWorker extends Worker {
     private void getUserMessages() {
 
         String mobile = Prefs.getUserMobile(getApplicationContext());
+
         // Log.d("TAGA", mobile);
         request.setMobile_number(mobile);
         SendMessagesResponse response = RestServices.getInstance().sendMessagesResponse(request);
@@ -68,18 +66,16 @@ public class MyWorker extends Worker {
         } catch (Exception e) {
             Log.d("TAGA", e.getMessage());
         }
-
     }
 
     private void startService(SendMessagesResponse response) {
         try {
             Gson gson = new Gson();
-//            String json = gson.toJson(num);
+//          String json = gson.toJson(num);
             String respo = gson.toJson(response);
             Intent serviceIntent = new Intent(getApplicationContext(), ForgroundService.class);
-//            serviceIntent.putExtra("json_data", json);
             serviceIntent.putExtra("respo_data", respo);
-            serviceIntent.putExtra("inputExtra", "Background task Perform...!!!");
+            serviceIntent.putExtra("inputExtra", "Background Task...");
             ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
         } catch (Exception e) {
             Log.d("TAGA", e.getMessage());
