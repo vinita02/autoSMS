@@ -51,6 +51,7 @@ public class ForgroundService extends Service {
     Gson gson = new Gson();
     SendMessagesIdRequest request = new SendMessagesIdRequest();
     int count;
+    BroadcastReceiver receiver;
 
     @Override
     public void onCreate() {
@@ -59,6 +60,7 @@ public class ForgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
 
         String input = intent.getStringExtra("inputExtra");
         Intent notificationIntent = new Intent(this, DashboardActivity.class);
@@ -75,6 +77,10 @@ public class ForgroundService extends Service {
         peformTask(intent);
         return START_NOT_STICKY;
     }
+
+
+
+
 
     private void peformTask(Intent intent) {
 
@@ -184,66 +190,6 @@ public class ForgroundService extends Service {
             }
         }, new IntentFilter(DELIVERED + ID));
     }
-
-
-//    private void sendMessages(String number, final String message, int id) {
-//
-//        Log.d("MySimpleService", number);
-//        Log.d("MySimpleService", String.valueOf(id));
-//
-//        ID = id;
-//        Intent deliveredIntent = new Intent(DELIVERED + ID);
-//        deliveredIntent.putExtra("messageID", ID);
-//
-//        Intent sentIntent = new Intent(SENT + ID);
-//        sentIntent.putExtra("ID", ID);
-//
-//        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-//                deliveredIntent, PendingIntent.FLAG_ONE_SHOT);
-//
-//
-//        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
-//                new Intent(SENT), 0);
-//
-////        SmsManager sms = SmsManager.getDefault();
-////        sms.sendTextMessage(number, null, message, sentPI, deliveredPI);
-//
-//
-//        //---when the SMS has been sent---
-//        registerReceiver(new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context arg0, Intent arg1) {
-//                switch (getResultCode()) {
-//                    case Activity.RESULT_OK:
-//                        Log.d("TAGA", "SENT");
-//                        Log.d("TAGA", String.valueOf(ID));
-//                        sentID.add(String.valueOf(ID));
-//                        String json = gson.toJson(sentID);
-//                        Prefs.setDeliverdIds(getApplicationContext(), json);
-//                        updateDeliverIds();
-//                        break;
-//                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-//                        break;
-//                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-//                        Toast.makeText(getBaseContext(), "No service", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case SmsManager.RESULT_ERROR_NULL_PDU:
-//                        break;
-//                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-//                        break;
-//                }
-//            }
-//        }, new IntentFilter(SENT));
-//
-//        //---when the SMS has been delivered---
-//        registerReceiver(new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context arg0, Intent arg1) {
-//
-//            }
-//        }, new IntentFilter(DELIVERED + ID));
-//
-//    }
 
     private void updateDeliverIds() {
         try {
