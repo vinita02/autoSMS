@@ -1,24 +1,19 @@
 package com.example.webwerks.autosms.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -26,28 +21,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.webwerks.autosms.R;
-import com.example.webwerks.autosms.adapter.OperatorsAdapter;
 import com.example.webwerks.autosms.adapter.ProfileNetworkAdapter;
-import com.example.webwerks.autosms.adapter.RegisterNetworkAdapter;
 import com.example.webwerks.autosms.model.request.UpdateProfileRequest;
 import com.example.webwerks.autosms.model.request.ViewProfileRequest;
 import com.example.webwerks.autosms.model.response.UpdateProfileResponse;
 import com.example.webwerks.autosms.model.response.ViewProfileResponse;
 import com.example.webwerks.autosms.utils.CheckNetwork;
-import com.example.webwerks.autosms.utils.DateFormat;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.example.webwerks.autosms.utils.Progress;
 import com.example.webwerks.autosms.viewmodel.MyProfileViewModel;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 public class MyProfileActivity extends BaseActivity {
 

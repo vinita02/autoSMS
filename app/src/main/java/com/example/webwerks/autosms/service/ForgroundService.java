@@ -4,19 +4,26 @@ package com.example.webwerks.autosms.service;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.activity.DashboardActivity;
 import com.example.webwerks.autosms.model.Contacts;
@@ -26,9 +33,11 @@ import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -36,6 +45,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+
 import static com.example.webwerks.autosms.application.App.CHANNEL_ID;
 
 
@@ -75,11 +85,8 @@ public class ForgroundService extends Service {
         startForeground(1, notification);
 
         peformTask(intent);
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
-
-
-
 
 
     private void peformTask(Intent intent) {
@@ -104,6 +111,7 @@ public class ForgroundService extends Service {
                                         try {
                                             String check_id = String.valueOf(data.message_id);
                                             String check = Prefs.getSentIds(getApplication());
+                                            Log.d("MySimpleService", check);
                                             if (check.contains(check_id)) {
                                                 Log.d("MySimpleService", "Match");
                                             } else {
@@ -116,7 +124,7 @@ public class ForgroundService extends Service {
                                                     emitter.onComplete();
                                                 }
                                             }).subscribe();
-                                        }catch (Exception e){
+                                        } catch (Exception e) {
 //                                            Log.d("TAGA", e.getMessage());
                                         }
                                     }
@@ -130,11 +138,11 @@ public class ForgroundService extends Service {
     }
 
     @SuppressLint("CheckResult")
-    private void sendMessages(final String num, String message, int id){
+    private void sendMessages(final String num, String message, int id) {
 
         ID = id;
         SmsManager sms = SmsManager.getDefault();
-        ArrayList<String> parts =sms.divideMessage(message);
+        ArrayList<String> parts = sms.divideMessage(message);
         ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
         ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
 
@@ -147,7 +155,16 @@ public class ForgroundService extends Service {
             deliveryIntents.add(PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0));
         }
 
-        sms.sendMultipartTextMessage(num,null, parts, sentIntents, deliveryIntents);
+        sms.sendMultipartTextMessage(num, null, parts, sentIntents, deliveryIntents);
+        //To add Sms to native app
+        ContentValues values = new ContentValues();
+        values.put("_id", ID);
+        values.put("address", num); // phone number to send
+        values.put("date", System.currentTimeMillis() + "");
+        values.put("read", "1"); // if you want to mark is as unread set to 0
+        values.put("body", message);
+
+        getContentResolver().insert(Uri.parse("content://sms/"), values);
 
         //---when the SMS has been sent---
         registerReceiver(new BroadcastReceiver() {
@@ -155,17 +172,19 @@ public class ForgroundService extends Service {
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        count = count-1;
-                        Log.d("TAGA","count"+count);
+                        count = count - 1;
+                        Log.d("TAGA", "count" + count);
                         Log.d("TAGA", "SENT");
-                        Log.d("TAGA", String.valueOf(ID));
-                        if (count==0){
-                        Log.d("TAGA", "CallApi");
-                        sentID.add(String.valueOf(ID));
-                        String json = gson.toJson(sentID);
-                        Prefs.setSentIds(getApplicationContext(), json);
-                        updateDeliverIds();
-                        }else {
+                        if (count == 0 || count == 1) {
+                            Log.d("TAGA", "CallApi");
+                            sentID.add(String.valueOf(ID));
+                            String json = gson.toJson(sentID);
+                            Log.d("TAGA", "Json " + String.valueOf(ID) + " " + json);
+                            Prefs.setSentIds(getApplicationContext(), json);
+                            updateDeliverIds();
+                            Log.e("SendSms_id0", ID + "");
+                            deleteSMS(ID);
+                        } else {
                             Log.d("TAGA", "ApiNotCall");
                         }
                         break;
@@ -189,6 +208,7 @@ public class ForgroundService extends Service {
                 Log.d("TAGA", "DELIVERED");
             }
         }, new IntentFilter(DELIVERED + ID));
+
     }
 
     private void updateDeliverIds() {
@@ -221,6 +241,33 @@ public class ForgroundService extends Service {
             }
         } catch (Exception e) {
             Log.d("TAGA", e.getMessage());
+        }
+
+    }
+
+    public void deleteSMS(long messageId) {
+        try {
+            Uri uriSms = Uri.parse("content://sms/");
+            Cursor c = getContentResolver().query(uriSms, new String[]{"_id"}, null, null, null);
+
+            if (c != null && c.moveToFirst()) {
+                do {
+                    long id = c.getLong(c.getColumnIndex("_id"));
+                    Log.e("SendSms_id1", id + "");
+                    Uri thread = Uri.parse("content://sms/" + id);
+                    if (id == messageId) {
+                        getContentResolver().delete(thread, null, null);
+                        Log.e("Message:", "Message is Deleted successfully");
+                    }
+
+                } while (c.moveToNext());
+            }
+
+            if (c != null) {
+                c.close();
+            }
+        } catch (Exception e) {
+            Log.e("Exception", e.toString());
         }
 
     }

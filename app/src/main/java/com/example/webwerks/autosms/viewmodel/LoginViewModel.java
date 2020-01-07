@@ -1,8 +1,8 @@
 package com.example.webwerks.autosms.viewmodel;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import com.example.webwerks.autosms.model.request.LoginRequest;
 import com.example.webwerks.autosms.model.response.LoginResponse;
 import com.example.webwerks.autosms.service.RestServices;

@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -96,7 +96,7 @@
             </LinearLayout>
 -->
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/llTerms"

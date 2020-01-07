@@ -1,22 +1,17 @@
 package com.example.webwerks.autosms.service;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 
-import com.example.webwerks.autosms.R;
 import com.example.webwerks.autosms.model.request.SendMessagesRequest;
 import com.example.webwerks.autosms.model.response.SendMessagesResponse;
 import com.example.webwerks.autosms.utils.Prefs;
 import com.google.gson.Gson;
 
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
