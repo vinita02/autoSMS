@@ -209,7 +209,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void register() {
         try {
-            //pDialog.show();
+           // pDialog.show();
             spCountrycode.registerPhoneNumberTextView(etmobile);
             prefix = spCountrycode.getSelectedCountryCode();
             final String mobile = getMobileNumber();
